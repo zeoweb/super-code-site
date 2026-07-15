@@ -1,0 +1,366 @@
+// ============================================================
+//  Super Code — схема базы данных (Prisma + PostgreSQL)
+//  Соответствует ТЗ. Комментарии на русском — чтобы заказчик
+//  мог ориентироваться в структуре.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Тариф пользователя / требуемый тариф урока
+enum Tier {
+  none // нет подписки (по умолчанию у нового пользователя)
+  plus // тариф Plus+
+  pro // тариф Pro
+}
+
+// Требуемый уровень доступа к уроку
+enum RequiredTier {
+  free // бесплатно, доступно всем
+  plus
+  pro
+}
+
+enum PaymentStatus {
+  pending // ждёт проверки админом
+  approved // одобрено
+  rejected // отклонено
+}
+
+enum Role {
+  student
+  admin
+}
+
+// Сложность вопроса викторины. novice — бесплатно всем; medium/pro — требуют тариф Plus+.
+enum QuizDifficulty {
+  novice
+  medium
+  pro
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  // Хотя бы один из email/phone обязателен на уровне логики,
+  // но при регистрации по ТЗ спрашиваем оба. Оба уникальны.
+  email        String?   @unique
+  phone        String?   @unique
+  passwordHash String    @map("password_hash")
+  tier         Tier      @default(none)
+  role         Role      @default(student)
+  xp           Int       @default(0)
+  avatarUrl    String?   @map("avatar_url")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  lastLoginAt  DateTime? @map("last_login_at")
+
+  progress          LessonProgress[]
+  payments          Payment[]
+  messages          ChatMessage[]
+  aiMessages        AiChatMessage[]
+  aiConversations   AiConversation[]
+  notifications     Notification[]
+  quizAttempts      QuizAttempt[]
+  communityMessages CommunityMessage[]
+
+  @@map("users")
+}
+
+// Общий чат участников с тарифом Pro — обсуждения + обмен фото/видео.
+// Один общий канал на всех (без отдельных комнат/тем).
+model CommunityMessage {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  text      String?
+  mediaUrl  String?  @map("media_url")
+  mediaType String?  @map("media_type") // "image" | "video"
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("community_messages")
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  modules Module[]
+
+  @@map("courses")
+}
+
+model Module {
+  id         String   @id @default(uuid())
+  courseId   String   @map("course_id")
+  title      String
+  orderIndex Int      @default(0) @map("order_index")
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([courseId])
+  @@map("modules")
+}
+
+model Lesson {
+  id              String       @id @default(uuid())
+  moduleId        String       @map("module_id")
+  title           String
+  description     String?
+  bunnyVideoId    String?      @map("bunny_video_id") // GUID видео в Bunny Stream
+  durationSeconds Int          @default(0) @map("duration_seconds")
+  orderIndex      Int          @default(0) @map("order_index")
+  isFree          Boolean      @default(false) @map("is_free")
+  requiredTier    RequiredTier @default(free) @map("required_tier")
+
+  module     Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress   LessonProgress[]
+  aiMessages AiChatMessage[]
+
+  @@index([moduleId])
+  @@map("lessons")
+}
+
+model LessonProgress {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  lessonId    String    @map("lesson_id")
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  // Разово выставляется при первом начислении XP за урок и больше никогда не
+  // сбрасывается — гарантирует, что снятие/повторная отметка "пройдено" не
+  // начислит XP повторно.
+  xpAwarded   Boolean   @default(false) @map("xp_awarded")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  // Один прогресс на пару пользователь+урок
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  userId            String        @map("user_id")
+  tier              Tier // на какой тариф заявка (plus | pro)
+  amount            Decimal       @db.Decimal(10, 2)
+  paymentMethodId   String?       @map("payment_method_id") // какой банк выбрал ученик
+  receiptScreenshot String        @map("receipt_screenshot_url")
+  status            PaymentStatus @default(pending)
+  adminComment      String?       @map("admin_comment")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  reviewedAt        DateTime?     @map("reviewed_at")
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("payments")
+}
+
+model PaymentMethod {
+  id            String  @id @default(uuid())
+  bankName      String  @map("bank_name")
+  phoneNumber   String  @map("phone_number")
+  recipientName String  @map("recipient_name")
+  logoUrl       String? @map("logo_url") // иконка банка — карточка со скриншота incurs.tj
+  isActive      Boolean @default(true) @map("is_active")
+
+  payments Payment[]
+
+  @@map("payment_methods")
+}
+
+// Статус задачи в разделе "Задачи" админки.
+enum TaskStatus {
+  open // открыта
+  in_progress // в работе
+  done // готова
+}
+
+// Простой тудушный список для админа/куратора (без назначения на сотрудников —
+// в проекте пока только роли student/admin, отдельной системы персонала нет).
+model Task {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus @default(open)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  completedAt DateTime?  @map("completed_at")
+
+  @@index([status])
+  @@map("tasks")
+}
+
+// Разовые расходы для раздела "Финансы". Выручка считается напрямую из
+// одобренных Payment — отдельная модель для неё не нужна.
+model Expense {
+  id        String   @id @default(uuid())
+  title     String
+  amount    Decimal  @db.Decimal(10, 2)
+  category  String?
+  spentAt   DateTime @default(now()) @map("spent_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("expenses")
+}
+
+// Простой чат "ученик ↔ поддержка": один линейный тред сообщений на пользователя,
+// админ видит все треды сразу. read = прочитано получателем сообщения.
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  fromAdmin Boolean  @default(false) @map("from_admin")
+  text      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("chat_messages")
+}
+
+// История переписки с общим AI-помощником "Super AI" (не привязан к уроку).
+// Один диалог с Super AI (аналог "чатов" в ChatGPT) — позволяет ученику
+// хранить несколько отдельных переписок и начинать новую с нуля.
+model AiConversation {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  title     String   @default("Новый чат")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AiChatMessage[]
+
+  @@index([userId])
+  @@map("ai_conversations")
+}
+
+model AiChatMessage {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  conversationId String?  @map("conversation_id")
+  // Заполнен только для сообщений виджета "AI по уроку" (контекстная помощь
+  // внутри конкретного урока) — отдельно от диалогов Super AI (conversationId).
+  lessonId       String?  @map("lesson_id")
+  role           String // "user" | "assistant"
+  content        String
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation AiConversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  lesson       Lesson?         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([conversationId])
+  @@index([lessonId])
+  @@map("ai_chat_messages")
+}
+
+// Уведомления пользователя (колокольчик в личном кабинете) — например,
+// поздравления при прохождении очередного урока.
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+// Лог массовых рассылок админа. Сама доставка — обычные ChatMessage
+// (fromAdmin: true) каждому получателю, эта запись — только история кампании.
+model Broadcast {
+  id             String   @id @default(uuid())
+  text           String
+  audience       Tier? // null = все ученики, иначе только этот тариф
+  recipientCount Int      @map("recipient_count")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("broadcasts")
+}
+
+// Отзывы учеников для карусели на лендинге.
+model Review {
+  id          String   @id @default(uuid())
+  studentName String   @map("student_name")
+  studentRole String?  @map("student_role") // напр. "IT специалист" — под именем
+  videoUrl    String?  @map("video_url") // ссылка на видео-отзыв (Bunny или загруженный файл)
+  quoteText   String?  @map("quote_text") // текстовая цитата, если видео нет
+  rating      Int      @default(5)
+  isPublished Boolean  @default(true) @map("is_published")
+  orderIndex  Int      @default(0) @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([isPublished])
+  @@map("reviews")
+}
+
+// Викторина для новичков (по темам модулей "Введение в вайб-кодинг" и
+// "Первый проект с ИИ" — без продвинутых Pro-тем, рано ещё).
+model Quiz {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  questions QuizQuestion[]
+  attempts  QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  id           String         @id @default(uuid())
+  quizId       String         @map("quiz_id")
+  text         String
+  options      String[] // варианты ответа
+  correctIndex Int            @map("correct_index") // индекс правильного варианта в options
+  difficulty   QuizDifficulty @default(novice)
+  orderIndex   Int            @default(0) @map("order_index")
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([quizId])
+  @@index([difficulty])
+  @@map("quiz_questions")
+}
+
+// Разово начисляем XP за первое прохождение каждого уровня сложности
+// (xpAwarded, тот же приём, что и в LessonProgress) — повторные попытки
+// на уже пройденном уровне не фармят очки.
+model QuizAttempt {
+  id         String         @id @default(uuid())
+  userId     String         @map("user_id")
+  quizId     String         @map("quiz_id")
+  difficulty QuizDifficulty @default(novice)
+  score      Int
+  total      Int
+  xpAwarded  Boolean        @default(false) @map("xp_awarded")
+  createdAt  DateTime       @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([quizId])
+  @@map("quiz_attempts")
+}
