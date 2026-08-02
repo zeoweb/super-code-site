@@ -6,21 +6,9 @@ import { jwtVerify } from "jose";
 
 const SESSION_COOKIE = "sc_session";
 
-// Разделы, требующие входа. /lessons сюда не входит: конкретный урок может
-// быть бесплатным и открытым без регистрации — проверка тарифа и доступа
-// для остальных уроков происходит на уровне самой страницы урока.
-const PROTECTED = [
-  "/dashboard",
-  "/courses",
-  "/billing",
-  "/profile",
-  "/admin",
-  "/leaderboard",
-  "/support",
-  "/ai",
-  "/quiz",
-  "/community",
-];
+// Разделы, требующие входа. /games (каталог и карточка игры) сюда не
+// входит — витрина публичная, вход нужен только на моменте покупки.
+const PROTECTED = ["/dashboard", "/topup", "/profile", "/admin", "/support", "/history"];
 // Разделы только для админа
 const ADMIN_ONLY = ["/admin"];
 
@@ -31,13 +19,8 @@ function secretKey(): Uint8Array {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Пробрасываем текущий путь в заголовке — серверные layout'ы (например,
-  // общий layout личного кабинета) не имеют доступа к pathname напрямую.
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-pathname", pathname);
-
   const needsAuth = PROTECTED.some((p) => pathname === p || pathname.startsWith(p + "/"));
-  if (!needsAuth) return NextResponse.next({ request: { headers: requestHeaders } });
+  if (!needsAuth) return NextResponse.next();
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;
 
@@ -67,21 +50,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
     "/dashboard/:path*",
-    "/courses/:path*",
-    "/lessons/:path*",
-    "/billing/:path*",
+    "/topup/:path*",
     "/profile/:path*",
     "/admin/:path*",
-    "/leaderboard/:path*",
     "/support/:path*",
-    "/ai/:path*",
-    "/quiz/:path*",
-    "/community/:path*",
+    "/history/:path*",
   ],
 };

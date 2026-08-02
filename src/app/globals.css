@@ -3,40 +3,36 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  @apply bg-ink-900 text-slate-100 antialiased;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
-    radial-gradient(ellipse 60% 50% at 100% 0%, rgba(34, 211, 238, 0.08), transparent);
-  background-attachment: fixed;
+  @apply bg-ink-900 text-slate-900 antialiased;
 }
 
-/* Утилитарные классы-компоненты в фирменном стиле: liquid glass + синий акцент */
+/* Утилитарные классы-компоненты: светлый минимализм + сине-фиолетовый акцент */
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold
       transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:hover:scale-100;
   }
   .btn-primary {
-    @apply btn bg-brand-gradient text-white shadow-lg hover:shadow-glow;
+    @apply btn bg-brand-gradient text-white shadow-md hover:shadow-glow-lg;
   }
   .btn-ghost {
-    @apply btn border border-white/10 bg-white/5 text-slate-100 backdrop-blur-xl hover:border-brand/40 hover:bg-white/10;
+    @apply btn border border-slate-200 bg-white text-slate-700 hover:border-brand/40 hover:bg-slate-50;
   }
   .card {
-    @apply rounded-2xl border border-white/10 bg-white/5 p-6 shadow-lg backdrop-blur-xl;
+    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm;
   }
   .input {
-    @apply w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-slate-100 outline-none
-      backdrop-blur-xl transition-colors duration-300 focus:border-brand;
+    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none
+      transition-colors duration-300 placeholder:text-slate-400 focus:border-brand;
   }
   .label {
-    @apply mb-1 block text-sm text-slate-400;
+    @apply mb-1 block text-sm text-slate-500;
   }
   .badge {
-    @apply inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium backdrop-blur-xl;
+    @apply inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700;
   }
 }

@@ -13,12 +13,12 @@ export function ReceiptFileInput() {
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="flex w-full items-center gap-3 rounded-xl border border-dashed border-white/15 bg-white/5 p-3 text-left transition-colors duration-300 hover:border-brand/40"
+        className="flex w-full items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-left transition-colors duration-300 hover:border-brand/40"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-lg">
           🧾
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm text-slate-300">
+        <span className="min-w-0 flex-1 truncate text-sm text-slate-600">
           {fileName ?? "Скриншот перевода"}
         </span>
         <span className="shrink-0 text-sm font-medium text-brand-light">
@@ -35,7 +35,7 @@ export function ReceiptFileInput() {
         className="hidden"
         onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
       />
-      <p className="mt-1 text-xs text-slate-500">PNG/JPG/WEBP или PDF, до 8 МБ.</p>
+      <p className="mt-1 text-xs text-slate-600">PNG/JPG/WEBP или PDF, до 8 МБ.</p>
     </div>
   );
 }

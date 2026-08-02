@@ -21,10 +21,10 @@ export function CopyButton({ value }: { value: string }) {
       type="button"
       onClick={copy}
       aria-label="Скопировать"
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 transition-colors duration-300 hover:bg-white/10 hover:text-white"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 transition-colors duration-300 hover:bg-slate-100 hover:text-slate-900"
     >
       {copied ? (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-emerald-400">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-emerald-600">
           <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4L19 7" />
         </svg>
       ) : (

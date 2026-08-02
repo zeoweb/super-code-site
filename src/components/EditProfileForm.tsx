@@ -84,7 +84,7 @@ export function EditProfileForm({ name, phone }: { name: string; phone: string |
         <button
           onClick={() => setEditing(true)}
           aria-label="Редактировать профиль"
-          className="rounded-full p-1.5 text-slate-400 transition-colors duration-300 hover:bg-white/10 hover:text-brand-light"
+          className="rounded-full p-1.5 text-slate-500 transition-colors duration-300 hover:bg-slate-100 hover:text-brand-light"
         >
           ✏️
         </button>
@@ -126,7 +126,7 @@ export function EditProfileForm({ name, phone }: { name: string; phone: string |
         <div>
           <label className="label" htmlFor="edit-name">Имя</label>
           <input id="edit-name" name="name" defaultValue={name} className="input" />
-          {nameError && <p className="mt-1 text-sm text-red-400">{nameError}</p>}
+          {nameError && <p className="mt-1 text-sm text-red-600">{nameError}</p>}
         </div>
 
         <div>
@@ -138,11 +138,11 @@ export function EditProfileForm({ name, phone }: { name: string; phone: string |
               disabled
               className="input cursor-not-allowed pr-10 opacity-60"
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-600">
               🔒
             </span>
           </div>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-slate-600">
             Телефон нельзя изменить здесь — он используется для входа.
           </p>
         </div>
@@ -152,7 +152,7 @@ export function EditProfileForm({ name, phone }: { name: string; phone: string |
         </SubmitButton>
       </form>
 
-      <div className="border-t border-white/10" />
+      <div className="border-t border-slate-200" />
 
       {/* Смена пароля */}
       <div>
@@ -163,19 +163,19 @@ export function EditProfileForm({ name, phone }: { name: string; phone: string |
           <div>
             <label className="label" htmlFor="currentPassword">Текущий пароль</label>
             <input id="currentPassword" name="currentPassword" type="password" className="input" required />
-            {currentPasswordError && <p className="mt-1 text-sm text-red-400">{currentPasswordError}</p>}
+            {currentPasswordError && <p className="mt-1 text-sm text-red-600">{currentPasswordError}</p>}
           </div>
           <div>
             <label className="label" htmlFor="newPassword">Новый пароль</label>
             <input id="newPassword" name="newPassword" type="password" className="input" required />
-            {newPasswordError && <p className="mt-1 text-sm text-red-400">{newPasswordError}</p>}
+            {newPasswordError && <p className="mt-1 text-sm text-red-600">{newPasswordError}</p>}
           </div>
           <div>
             <label className="label" htmlFor="confirmPassword">Повторите пароль</label>
             <input id="confirmPassword" name="confirmPassword" type="password" className="input" required />
-            {confirmPasswordError && <p className="mt-1 text-sm text-red-400">{confirmPasswordError}</p>}
+            {confirmPasswordError && <p className="mt-1 text-sm text-red-600">{confirmPasswordError}</p>}
           </div>
-          {genericPasswordError && <p className="text-sm text-red-400">{genericPasswordError}</p>}
+          {genericPasswordError && <p className="text-sm text-red-600">{genericPasswordError}</p>}
 
           <div className="flex flex-wrap gap-2">
             <SubmitButton className="btn-primary px-4 py-2 text-sm" pendingText="Сохраняем…">

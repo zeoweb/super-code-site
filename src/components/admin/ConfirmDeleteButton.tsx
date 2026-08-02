@@ -20,7 +20,7 @@ export function ConfirmDeleteButton({
       }}
     >
       <input type="hidden" name="id" value={id} />
-      <button className="btn-ghost px-3 py-2 text-xs text-red-400">{label}</button>
+      <button className="btn-ghost px-3 py-2 text-xs text-red-600">{label}</button>
     </form>
   );
 }

@@ -42,7 +42,7 @@ export function SupportMessageForm() {
           {pending ? "Отправка…" : "Отправить"}
         </button>
       </div>
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </form>
   );
 }

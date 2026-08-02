@@ -54,7 +54,7 @@ export function AvatarUploadForm({
         className="hidden"
         onChange={onFileChange}
       />
-      {state?.error && <p className="mt-1 max-w-[8rem] text-center text-xs text-red-400">{state.error}</p>}
+      {state?.error && <p className="mt-1 max-w-[8rem] text-center text-xs text-red-600">{state.error}</p>}
     </form>
   );
 }

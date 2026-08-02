@@ -13,19 +13,19 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/10 bg-ink-800/60 backdrop-blur-xl">
+      <header className="border-b border-slate-200 bg-ink-800/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 p-3 sm:p-4">
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <AdminMobileNav name={user.name} avatarUrl={user.avatarUrl} />
             <span className="truncate text-base font-black sm:text-lg">
-              SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">CODE</span>{" "}
-              <span className="hidden font-normal text-slate-400 sm:inline text-sm">админка</span>
+              SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>{" "}
+              <span className="hidden font-normal text-slate-500 sm:inline text-sm">админка</span>
             </span>
           </div>
           <div className="flex shrink-0 items-center gap-1 text-sm sm:gap-2">
-            <Link href="/dashboard" className="rounded-lg px-2 py-2 transition-colors duration-300 hover:bg-white/10 sm:px-3">На сайт</Link>
+            <Link href="/dashboard" className="rounded-lg px-2 py-2 transition-colors duration-300 hover:bg-slate-100 sm:px-3">На сайт</Link>
             <form action={logoutAction}>
-              <button className="rounded-lg px-2 py-2 text-red-400 transition-colors duration-300 hover:bg-white/10 sm:px-3">Выйти</button>
+              <button className="rounded-lg px-2 py-2 text-red-600 transition-colors duration-300 hover:bg-slate-100 sm:px-3">Выйти</button>
             </form>
           </div>
         </div>

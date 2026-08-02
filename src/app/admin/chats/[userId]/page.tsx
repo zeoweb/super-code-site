@@ -26,7 +26,7 @@ export default async function AdminChatThreadPage({ params }: { params: { userId
 
   return (
     <div>
-      <Link href="/admin/chats" className="text-sm text-slate-400 hover:text-white">← Все чаты</Link>
+      <Link href="/admin/chats" className="text-sm text-slate-500 hover:text-slate-900">← Все чаты</Link>
 
       <div className="mt-3 flex items-center gap-3">
         <Avatar name={student.name} avatarUrl={student.avatarUrl} />
@@ -35,7 +35,7 @@ export default async function AdminChatThreadPage({ params }: { params: { userId
 
       <div className="card mt-4 space-y-3">
         {messages.length === 0 && (
-          <p className="text-sm text-slate-500">Сообщений пока нет.</p>
+          <p className="text-sm text-slate-600">Сообщений пока нет.</p>
         )}
         {messages.map((m) => (
           <div key={m.id} className={"flex " + (m.fromAdmin ? "justify-end" : "justify-start")}>
@@ -44,11 +44,11 @@ export default async function AdminChatThreadPage({ params }: { params: { userId
                 "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
                 (m.fromAdmin
                   ? "bg-brand-gradient text-white"
-                  : "border border-white/10 bg-white/5 text-slate-200")
+                  : "border border-slate-200 bg-slate-50 text-slate-700")
               }
             >
               <ChatMessageBody text={m.text} />
-              <p className={"mt-1 text-[10px] " + (m.fromAdmin ? "text-white/70" : "text-slate-500")}>
+              <p className={"mt-1 text-[10px] " + (m.fromAdmin ? "text-white/70" : "text-slate-600")}>
                 {m.createdAt.toLocaleString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
               </p>
             </div>

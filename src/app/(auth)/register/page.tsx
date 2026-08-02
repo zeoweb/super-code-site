@@ -20,14 +20,13 @@ const MESSAGES: Record<Exclude<Field, null>, string> = {
 export default function RegisterPage({
   searchParams,
 }: {
-  searchParams: { returnTo?: string };
+  searchParams: { returnTo?: string; ref?: string };
 }) {
   const [state, action] = useFormState<ActionState, FormData>(registerAction, undefined);
   const [active, setActive] = useState<Field>(null);
 
   return (
     <main className="relative mx-auto flex min-h-screen max-w-5xl flex-col items-center gap-10 overflow-hidden p-6 py-12 lg:flex-row lg:justify-center lg:py-6">
-      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl" />
 
       <Reveal className="hidden shrink-0 lg:block lg:flex-1">
         <div className="flex justify-end pr-8">
@@ -51,18 +50,19 @@ export default function RegisterPage({
         </div>
         <div className="text-center">
           <Link href="/" className="text-2xl font-black tracking-tight">
-            SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">CODE</span>
+            SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>
           </Link>
         </div>
         <div className="card mt-6">
-          <span className="badge border-brand/40 text-brand-light">Старт сегодня</span>
-          <h1 className="mt-3 text-2xl font-bold">Регистрация в Super Code</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <span className="badge border-brand/40 text-brand-light">Регистрация</span>
+          <h1 className="mt-3 text-2xl font-bold">Регистрация в SuperDonat</h1>
+          <p className="mt-1 text-sm text-slate-500">
             Укажите email и телефон — входить сможете любым из них.
           </p>
 
           <form action={action} className="mt-6 space-y-4">
           <input type="hidden" name="returnTo" value={searchParams.returnTo ?? ""} />
+          <input type="hidden" name="ref" value={searchParams.ref ?? ""} />
           <div>
             <label className="label" htmlFor="name">Имя</label>
             <input
@@ -111,13 +111,13 @@ export default function RegisterPage({
           </div>
 
           {state?.error && (
-            <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">{state.error}</p>
+            <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-600">{state.error}</p>
           )}
 
           <SubmitButton pendingText="Создаём аккаунт…">Начать бесплатно</SubmitButton>
         </form>
 
-          <p className="mt-4 text-center text-sm text-slate-400">
+          <p className="mt-4 text-center text-sm text-slate-500">
             Уже есть аккаунт?{" "}
             <Link
               href={searchParams.returnTo ? `/login?returnTo=${encodeURIComponent(searchParams.returnTo)}` : "/login"}

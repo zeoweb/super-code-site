@@ -5,21 +5,24 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { saveUploadedFile } from "@/lib/storage";
-import { TIER_PRICES } from "@/lib/pricing";
-import type { Tier } from "@prisma/client";
 
-// Ученик отправляет заявку на оплату: тариф + способ оплаты + скриншот чека.
-// Форма — отдельная страница /billing/checkout/pay, не клиентский стейт,
-// поэтому результат сообщается через redirect (успех/ошибка — разными URL).
-export async function submitPayment(formData: FormData): Promise<void> {
-  const tier = String(formData.get("tier")) as Tier;
+const MIN_AMOUNT = 1;
+const MAX_AMOUNT = 100000;
+
+// Пользователь отправляет заявку на пополнение баланса: сумма + способ
+// оплаты + скриншот чека. Форма — отдельная страница /topup/pay, не
+// клиентский стейт, поэтому результат сообщается через redirect.
+export async function submitTopUp(formData: FormData): Promise<void> {
+  const amount = Number(formData.get("amount"));
   const paymentMethodId = String(formData.get("paymentMethodId") ?? "").trim() || null;
-  const back = `/billing/checkout/pay?tier=${tier}${paymentMethodId ? `&method=${paymentMethodId}` : ""}`;
+  const back = `/topup/pay?amount=${amount}${paymentMethodId ? `&method=${paymentMethodId}` : ""}`;
 
   const user = await getCurrentUser();
   if (!user) redirect(`/login?returnTo=${encodeURIComponent(back)}`);
 
-  if (tier !== "plus" && tier !== "pro") redirect("/billing/checkout");
+  if (!Number.isFinite(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
+    redirect("/topup");
+  }
 
   const file = formData.get("receipt");
   if (!(file instanceof File) || file.size === 0) {
@@ -34,18 +37,17 @@ export async function submitPayment(formData: FormData): Promise<void> {
     redirect(`${back}&error=${encodeURIComponent(message)}`);
   }
 
-  await prisma.payment.create({
+  await prisma.topUp.create({
     data: {
       userId: user.id,
-      tier,
-      amount: TIER_PRICES[tier],
+      amount,
       paymentMethodId,
       receiptScreenshot: receiptUrl,
       status: "pending",
     },
   });
 
-  revalidatePath("/billing");
   revalidatePath("/profile");
-  redirect("/billing/checkout/success");
+  revalidatePath("/history");
+  redirect("/topup/success");
 }

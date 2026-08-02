@@ -25,7 +25,6 @@ export default function LoginPage({
 
   return (
     <main className="relative mx-auto flex min-h-screen max-w-5xl flex-col items-center gap-10 overflow-hidden p-6 py-12 lg:flex-row lg:justify-center lg:py-6">
-      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl" />
 
       <Reveal className="hidden shrink-0 lg:block lg:flex-1">
         <div className="flex justify-end pr-8">
@@ -49,12 +48,12 @@ export default function LoginPage({
         </div>
         <div className="text-center">
           <Link href="/" className="text-2xl font-black tracking-tight">
-            SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">CODE</span>
+            SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>
           </Link>
         </div>
         <div className="card mt-6">
           <h1 className="text-2xl font-bold">Вход</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500">
             Введите email или номер телефона.
           </p>
 
@@ -84,13 +83,13 @@ export default function LoginPage({
           </div>
 
           {state?.error && (
-            <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">{state.error}</p>
+            <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-600">{state.error}</p>
           )}
 
           <SubmitButton pendingText="Входим…">Войти</SubmitButton>
         </form>
 
-          <p className="mt-4 text-center text-sm text-slate-400">
+          <p className="mt-4 text-center text-sm text-slate-500">
             Нет аккаунта?{" "}
             <Link
               href={searchParams.returnTo ? `/register?returnTo=${encodeURIComponent(searchParams.returnTo)}` : "/register"}

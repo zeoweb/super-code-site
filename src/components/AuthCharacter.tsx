@@ -25,26 +25,26 @@ export function AuthCharacter({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="relative rounded-2xl border border-white/10 bg-ink-800/95 px-4 py-2 text-center text-sm font-medium text-white shadow-lg backdrop-blur-xl"
+            className="relative rounded-2xl border border-slate-200 bg-white px-4 py-2 text-center text-sm font-medium text-slate-900 shadow-md"
           >
             {message}
-            <div className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-white/10 bg-ink-800/95" />
+            <div className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-slate-200 bg-white" />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <svg viewBox="0 0 200 220" className="w-full drop-shadow-[0_16px_36px_rgba(59,130,246,0.35)]">
+      <svg viewBox="0 0 200 220" className="w-full drop-shadow-md">
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#22d3ee" />
+            <stop offset="0%" stopColor="#5B4FE0" />
+            <stop offset="100%" stopColor="#7C6FF0" />
           </linearGradient>
         </defs>
 
         {/* Тело */}
         <rect x="55" y="92" width="90" height="108" rx="30" fill={`url(#${gradientId})`} />
         {/* Голова */}
-        <circle cx="100" cy="70" r="55" fill="#141d2b" stroke={`url(#${gradientId})`} strokeWidth="4" />
+        <circle cx="100" cy="70" r="55" fill="#1E1B3A" stroke={`url(#${gradientId})`} strokeWidth="4" />
 
         {/* Глаза — скрыты, когда персонаж "закрывает" их руками (ввод пароля) */}
         {!coverEyes && (

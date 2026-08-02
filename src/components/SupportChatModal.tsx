@@ -118,36 +118,36 @@ function openModal() {
           onClick={() => setOpen(false)}
         >
           <div
-            className="flex max-h-[80vh] w-full max-w-md flex-col rounded-2xl border border-white/10 bg-ink-800/95 shadow-glow-lg backdrop-blur-xl"
+            className="flex max-h-[80vh] w-full max-w-md flex-col rounded-2xl border border-slate-200 bg-ink-800/95 shadow-glow-lg backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Хедер */}
-            <div className="flex items-center gap-3 border-b border-white/10 p-4">
+            <div className="flex items-center gap-3 border-b border-slate-200 p-4">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-gradient text-lg text-white shadow-glow">
                 💬
               </span>
               <div className="min-w-0 flex-1">
                 <div className="font-bold">Чат</div>
-                <div className="text-xs text-slate-400">Система и куратор</div>
+                <div className="text-xs text-slate-500">Система и куратор</div>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Закрыть"
-                className="rounded-full p-1.5 text-slate-400 transition-colors duration-300 hover:bg-white/10 hover:text-white"
+                className="rounded-full p-1.5 text-slate-500 transition-colors duration-300 hover:bg-slate-100 hover:text-slate-900"
               >
                 ✕
               </button>
             </div>
 
             {/* Табы */}
-            <div className="flex gap-1 border-b border-white/10 p-2">
+            <div className="flex gap-1 border-b border-slate-200 p-2">
               {(["all", "system", "curator"] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
                   className={
                     "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-300 " +
-                    (tab === t ? "bg-brand-gradient text-white" : "text-slate-400 hover:bg-white/10")
+                    (tab === t ? "bg-brand-gradient text-white" : "text-slate-500 hover:bg-slate-100")
                   }
                 >
                   {t === "all" ? "Все" : t === "system" ? "Система" : "Куратор"}
@@ -160,15 +160,15 @@ function openModal() {
               {visibleFeed.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center gap-2 py-10 text-center">
                   <span className="text-3xl text-slate-600">💬</span>
-                  <p className="font-medium text-slate-300">Пока пусто</p>
-                  <p className="text-sm text-slate-500">Сообщения появятся здесь</p>
+                  <p className="font-medium text-slate-600">Пока пусто</p>
+                  <p className="text-sm text-slate-600">Сообщения появятся здесь</p>
                 </div>
               ) : (
                 visibleFeed.map((item) =>
                   item.kind === "notification" ? (
-                    <div key={item.id} className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm">
+                    <div key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm">
                       <p>{item.data.message}</p>
-                      <p className="mt-1 text-xs text-slate-500">{formatTime(item.createdAt)}</p>
+                      <p className="mt-1 text-xs text-slate-600">{formatTime(item.createdAt)}</p>
                     </div>
                   ) : (
                     <div key={item.id} className={"flex " + (item.data.fromAdmin ? "justify-start" : "justify-end")}>
@@ -176,12 +176,12 @@ function openModal() {
                         className={
                           "max-w-[80%] rounded-2xl px-4 py-2 text-sm " +
                           (item.data.fromAdmin
-                            ? "border border-white/10 bg-white/5 text-slate-200"
+                            ? "border border-slate-200 bg-slate-50 text-slate-700"
                             : "bg-brand-gradient text-white")
                         }
                       >
                         <ChatMessageBody text={item.data.text} />
-                        <p className={"mt-1 text-[10px] " + (item.data.fromAdmin ? "text-slate-500" : "text-white/70")}>
+                        <p className={"mt-1 text-[10px] " + (item.data.fromAdmin ? "text-slate-600" : "text-white/70")}>
                           {formatTime(item.createdAt)}
                         </p>
                       </div>
@@ -192,15 +192,15 @@ function openModal() {
             </div>
 
             {/* Композер */}
-            <div className="border-t border-white/10 p-3">
-              <div className="flex items-end gap-2 rounded-2xl border border-white/10 bg-white/5 p-2">
+            <div className="border-t border-slate-200 p-3">
+              <div className="flex items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2">
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={onKeyDown}
                   rows={1}
                   placeholder="Напишите куратору…"
-                  className="max-h-24 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-slate-500"
+                  className="max-h-24 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-slate-600"
                 />
                 <button
                   onClick={send}
@@ -211,7 +211,7 @@ function openModal() {
                   ➤
                 </button>
               </div>
-              <p className="mt-1.5 text-center text-[11px] text-slate-500">
+              <p className="mt-1.5 text-center text-[11px] text-slate-600">
                 Enter — отправить · Shift+Enter — новая строка
               </p>
             </div>

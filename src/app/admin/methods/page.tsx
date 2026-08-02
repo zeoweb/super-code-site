@@ -19,19 +19,19 @@ export default async function AdminMethodsPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={m.logoUrl} alt="" className="h-full w-full object-contain p-1" />
                   ) : (
-                    <span className="text-sm font-bold text-ink-900">{m.bankName.charAt(0)}</span>
+                    <span className="text-sm font-bold text-slate-900">{m.bankName.charAt(0)}</span>
                   )}
                 </span>
                 <div className="min-w-0">
                   <div className="truncate font-medium">
-                    {m.bankName} {!m.isActive && <span className="badge text-slate-500">выкл</span>}
+                    {m.bankName} {!m.isActive && <span className="badge text-slate-600">выкл</span>}
                   </div>
-                  <div className="truncate text-sm text-slate-400">{m.phoneNumber} · {m.recipientName}</div>
+                  <div className="truncate text-sm text-slate-500">{m.phoneNumber} · {m.recipientName}</div>
                 </div>
               </div>
             </summary>
 
-            <div className="space-y-4 border-t border-white/10 p-4">
+            <div className="space-y-4 border-t border-slate-200 p-4">
               <form action={savePaymentMethod} className="space-y-3">
                 <input type="hidden" name="id" value={m.id} />
                 <div>
@@ -50,7 +50,7 @@ export default async function AdminMethodsPage() {
                   <label className="label">Логотип (PNG/JPG/WEBP)</label>
                   <input name="logo" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
                   {m.logoUrl && (
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-slate-600">
                       Сейчас загружен свой логотип — оставьте поле пустым, чтобы не менять.
                     </p>
                   )}
@@ -61,7 +61,7 @@ export default async function AdminMethodsPage() {
                 <button className="btn-primary px-4 py-2 text-sm">Сохранить</button>
               </form>
 
-              <form action={togglePaymentMethod} className="border-t border-white/10 pt-3">
+              <form action={togglePaymentMethod} className="border-t border-slate-200 pt-3">
                 <input type="hidden" name="id" value={m.id} />
                 <button className="btn-ghost px-3 py-2 text-sm">
                   {m.isActive ? "Деактивировать" : "Активировать"}
@@ -71,7 +71,7 @@ export default async function AdminMethodsPage() {
           </details>
         ))}
         {methods.length === 0 && (
-          <p className="text-sm text-slate-500">Реквизитов пока нет — добавьте ниже.</p>
+          <p className="text-sm text-slate-600">Реквизитов пока нет — добавьте ниже.</p>
         )}
       </div>
 

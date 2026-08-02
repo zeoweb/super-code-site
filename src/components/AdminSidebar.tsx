@@ -14,27 +14,19 @@ const NAV: NavEntry[] = [
   { type: "leaf", href: "/admin/tasks", label: "Задачи", icon: TasksIcon },
   {
     type: "category",
-    label: "Продажи и учёт",
+    label: "Продажи",
     icon: SalesIcon,
     children: [
-      { href: "/admin/payments", label: "Платежи" },
+      { href: "/admin/topups", label: "Пополнения" },
+      { href: "/admin/orders", label: "Заказы" },
       { href: "/admin/methods", label: "Реквизиты оплаты" },
+      { href: "/admin/promocodes", label: "Промокоды" },
     ],
   },
   { type: "leaf", href: "/admin/finance", label: "Финансы", icon: FinanceIcon },
-  { type: "leaf", href: "/admin/users", label: "Ученики", icon: StudentsIcon },
-  {
-    type: "category",
-    label: "Обучение",
-    icon: BookIcon,
-    children: [
-      { href: "/admin/lessons", label: "Уроки и модули" },
-      { href: "/admin/reviews", label: "Отзывы" },
-      { href: "/admin/quiz", label: "Викторина" },
-    ],
-  },
+  { type: "leaf", href: "/admin/users", label: "Пользователи", icon: StudentsIcon },
+  { type: "leaf", href: "/admin/games", label: "Игры и товары", icon: BookIcon },
   { type: "leaf", href: "/admin/chats", label: "Чаты", icon: ChatIcon },
-  { type: "leaf", href: "/admin/broadcast", label: "Рассылка", icon: BroadcastIcon },
 ];
 
 export function AdminSidebar({ name, avatarUrl }: { name: string; avatarUrl?: string | null }) {
@@ -51,12 +43,12 @@ export function AdminSidebar({ name, avatarUrl }: { name: string; avatarUrl?: st
       )}
 
       {/* Карточка админа внизу списка */}
-      <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-xl">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 backdrop-blur-xl">
         <div className="flex items-center gap-2">
           <Avatar name={name} avatarUrl={avatarUrl} size="h-8 w-8" textSize="text-sm" />
           <div className="min-w-0">
             <div className="truncate text-sm font-medium">{name}</div>
-            <div className="text-xs text-slate-500">Администратор</div>
+            <div className="text-xs text-slate-600">Администратор</div>
           </div>
         </div>
       </div>
@@ -72,7 +64,7 @@ function NavLeafLink({ entry, pathname }: { entry: Leaf; pathname: string }) {
       href={entry.href}
       className={
         "flex items-center gap-2.5 rounded-lg px-3 py-2 transition-colors duration-300 " +
-        (isActive ? "bg-brand-gradient text-white shadow-glow" : "text-slate-300 hover:bg-white/10 hover:text-white")
+        (isActive ? "bg-brand-gradient text-white shadow-glow" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900")
       }
     >
       <Icon className="h-4 w-4 shrink-0" />
@@ -92,7 +84,7 @@ function NavCategoryBlock({ entry, pathname }: { entry: Category; pathname: stri
         onClick={() => setOpen((v) => !v)}
         className={
           "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors duration-300 " +
-          (childActive ? "text-brand-light" : "text-slate-300 hover:bg-white/10 hover:text-white")
+          (childActive ? "text-brand-light" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900")
         }
       >
         <Icon className="h-4 w-4 shrink-0" />
@@ -100,7 +92,7 @@ function NavCategoryBlock({ entry, pathname }: { entry: Category; pathname: stri
         <ChevronIcon className={"h-3.5 w-3.5 shrink-0 transition-transform duration-300 " + (open ? "rotate-180" : "")} />
       </button>
       {open && (
-        <div className="ml-4 mt-1 space-y-1 border-l border-white/10 pl-3">
+        <div className="ml-4 mt-1 space-y-1 border-l border-slate-200 pl-3">
           {entry.children.map((c) => {
             const isActive = pathname === c.href;
             return (
@@ -109,7 +101,7 @@ function NavCategoryBlock({ entry, pathname }: { entry: Category; pathname: stri
                 href={c.href}
                 className={
                   "block rounded-lg px-3 py-1.5 transition-colors duration-300 " +
-                  (isActive ? "bg-white/10 text-white" : "text-slate-400 hover:bg-white/10 hover:text-white")
+                  (isActive ? "bg-slate-100 text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900")
                 }
               >
                 {c.label}
@@ -190,15 +182,6 @@ function ChatIcon(props: IconProps) {
         strokeLinejoin="round"
         d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"
       />
-    </svg>
-  );
-}
-
-function BroadcastIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1Z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11" />
     </svg>
   );
 }

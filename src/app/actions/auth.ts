@@ -44,12 +44,16 @@ export async function registerAction(
     return { error: "Такой телефон уже зарегистрирован" };
   }
 
+  const refId = String(formData.get("ref") ?? "").trim() || null;
+  const referrer = refId ? await prisma.user.findUnique({ where: { id: refId }, select: { id: true } }) : null;
+
   const user = await prisma.user.create({
     data: {
       name,
       email,
       phone,
       passwordHash: await hashPassword(password),
+      referredById: referrer?.id ?? null,
     },
   });
 

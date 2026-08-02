@@ -10,7 +10,7 @@ export function LogoutButton() {
         if (!confirm("Точно выйти из аккаунта?")) e.preventDefault();
       }}
     >
-      <button className="btn-ghost w-full border-red-500/30 text-red-400 hover:border-red-500/50 hover:bg-red-500/10">
+      <button className="btn-ghost w-full border-red-500/30 text-red-600 hover:border-red-500/50 hover:bg-red-500/10">
         Выйти из аккаунта
       </button>
     </form>

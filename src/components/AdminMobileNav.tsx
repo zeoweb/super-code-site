@@ -24,7 +24,7 @@ export function AdminMobileNav({ name, avatarUrl }: { name: string; avatarUrl?: 
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Меню админки"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 transition-colors duration-300 hover:bg-white/10 md:hidden"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 transition-colors duration-300 hover:bg-slate-100 md:hidden"
       >
         <MenuIcon className="h-5 w-5" />
       </button>
@@ -40,16 +40,16 @@ export function AdminMobileNav({ name, avatarUrl }: { name: string; avatarUrl?: 
             onClick={() => setOpen(false)}
           >
             <div
-              className="flex h-full w-[85%] max-w-xs flex-col overflow-y-auto border-r border-white/10 bg-ink-900 p-4"
+              className="flex h-full w-[85%] max-w-xs flex-col overflow-y-auto border-r border-slate-200 bg-ink-900 p-4"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between pb-3">
-                <span className="text-sm font-semibold text-slate-400">Меню админки</span>
+                <span className="text-sm font-semibold text-slate-500">Меню админки</span>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label="Закрыть"
-                  className="rounded-full p-1.5 text-slate-400 transition-colors duration-300 hover:bg-white/10 hover:text-white"
+                  className="rounded-full p-1.5 text-slate-500 transition-colors duration-300 hover:bg-slate-100 hover:text-slate-900"
                 >
                   ✕
                 </button>

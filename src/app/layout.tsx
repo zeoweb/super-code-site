@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Super Code — вайб-кодинг с нуля",
+  title: "SuperDonat — пополнение игровой валюты",
   description:
-    "Практический онлайн-курс по вайб-кодингу: реальные проекты с ИИ, с куратором и сертификатом.",
+    "Быстрое и надёжное пополнение алмазов, UC и пропусков в популярных играх — PUBG Mobile, Free Fire и другие.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -28,11 +28,11 @@ export default async function AdminChatsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">Чаты</h1>
-      <p className="mt-1 text-sm text-slate-400">Переписки с учениками.</p>
+      <p className="mt-1 text-sm text-slate-500">Переписки с учениками.</p>
 
       <div className="mt-6 space-y-2">
         {list.length === 0 && (
-          <p className="text-sm text-slate-500">Сообщений пока нет.</p>
+          <p className="text-sm text-slate-600">Сообщений пока нет.</p>
         )}
         {list.map((t) => (
           <Link
@@ -43,10 +43,10 @@ export default async function AdminChatsPage() {
             <Avatar name={t.user.name} avatarUrl={t.user.avatarUrl} />
             <div className="min-w-0 flex-1">
               <div className="font-medium">{t.user.name}</div>
-              <div className="truncate text-sm text-slate-400">{t.lastText}</div>
+              <div className="truncate text-sm text-slate-500">{t.lastText}</div>
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1">
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-600">
                 {t.lastAt.toLocaleDateString("ru-RU")}
               </span>
               {t.unread > 0 && (

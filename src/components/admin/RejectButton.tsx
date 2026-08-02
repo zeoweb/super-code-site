@@ -1,23 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { rejectPayment } from "@/app/actions/admin";
 
 // Кнопка «Отклонить» → раскрывает поле для обязательного комментария.
-export function RejectButton({ paymentId }: { paymentId: string }) {
+export function RejectButton({
+  id,
+  action,
+}: {
+  id: string;
+  action: (formData: FormData) => void;
+}) {
   const [open, setOpen] = useState(false);
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className="btn-ghost px-3 py-2 text-sm text-red-400">
+      <button onClick={() => setOpen(true)} className="btn-ghost px-3 py-2 text-sm text-red-600">
         Отклонить
       </button>
     );
   }
 
   return (
-    <form action={rejectPayment} className="flex flex-col gap-2 sm:flex-row">
-      <input type="hidden" name="id" value={paymentId} />
+    <form action={action} className="flex flex-col gap-2 sm:flex-row">
+      <input type="hidden" name="id" value={id} />
       <input
         name="comment"
         required
