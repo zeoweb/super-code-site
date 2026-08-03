@@ -63,21 +63,7 @@ export function SiteHeader({
 
         {search && (
           <div className="relative hidden flex-1 max-w-sm sm:block">
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-            >
-              <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M17 17l-3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            <input
-              type="text"
-              value={search.value}
-              onChange={(e) => search.onChange(e.target.value)}
-              placeholder="Найти игру"
-              className="input py-2 pl-9 text-sm"
-            />
+            <SearchInput search={search} />
           </div>
         )}
 
@@ -120,6 +106,12 @@ export function SiteHeader({
         )}
       </div>
 
+      {search && (
+        <div className="relative mt-3 sm:hidden">
+          <SearchInput search={search} />
+        </div>
+      )}
+
       <nav className="mt-3 hidden items-center gap-4 text-sm font-medium sm:flex">
         {navItems.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -140,6 +132,28 @@ export function SiteHeader({
       </nav>
     </header>
     <MobileNavBar nav={dict.nav} />
+    </>
+  );
+}
+
+function SearchInput({ search }: { search: SiteHeaderSearch }) {
+  return (
+    <>
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+      >
+        <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M17 17l-3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+      <input
+        type="text"
+        value={search.value}
+        onChange={(e) => search.onChange(e.target.value)}
+        placeholder="Найти игру"
+        className="input py-2 pl-9 text-sm"
+      />
     </>
   );
 }
