@@ -1,24 +1,25 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { EditProfileForm } from "@/components/EditProfileForm";
 import { AvatarUploadForm } from "@/components/AvatarUploadForm";
 import { LogoutButton } from "@/components/LogoutButton";
-import { CopyButton } from "@/components/CopyButton";
-import { REFERRAL_PERCENT } from "@/lib/referral";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?returnTo=/profile");
 
-  const [referralsCount, ordersCount] = await Promise.all([
-    prisma.user.count({ where: { referredById: user.id } }),
-    prisma.order.count({ where: { userId: user.id } }),
-  ]);
+  const ordersCount = await prisma.order.count({ where: { userId: user.id } });
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
-  const referralLink = `${appUrl}/register?ref=${user.id}`;
+  const locale = getLocale();
+  const dict = getDictionary(locale);
+  const isDark = cookies().get("theme")?.value === "dark";
 
   const registeredAt = user.createdAt.toLocaleDateString("ru-RU", {
     day: "numeric",
@@ -56,21 +57,29 @@ export default async function ProfilePage() {
         <QuickLink href="/" label="Каталог игр" icon={<GameIcon />} />
       </div>
 
-      {/* Реферальная программа */}
-      <h2 className="mt-8 text-lg font-bold">Пригласить друзей</h2>
-      <div className="card mt-3">
-        <p className="text-sm text-slate-500">
-          Получайте {REFERRAL_PERCENT}% с каждой покупки приглашённого друга — бонус
-          начисляется на баланс автоматически.
-        </p>
-        <div className="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <code className="min-w-0 flex-1 truncate text-sm text-slate-600">{referralLink}</code>
-          <CopyButton value={referralLink} />
+      {/* Настройки: язык и тема */}
+      <div className="card mt-8 divide-y divide-slate-100">
+        <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+          <span className="text-sm font-medium">{dict.settings.language}</span>
+          <LanguageSwitcher current={locale} />
         </div>
-        <p className="mt-3 text-sm text-slate-600">
-          Приглашено друзей: <strong className="text-slate-600">{referralsCount}</strong>
-        </p>
+        <div className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+          <span className="text-sm font-medium">{dict.settings.theme}</span>
+          <ThemeToggle initialDark={isDark} />
+        </div>
       </div>
+
+      {/* Реферальная программа */}
+      <Link
+        href="/profile/referral"
+        className="card mt-4 flex items-center gap-3 transition-all duration-300 hover:scale-[1.01] hover:border-brand/40"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-brand-light">
+          <PersonPlusIcon />
+        </span>
+        <span className="min-w-0 flex-1 text-sm font-medium">{dict.settings.referral}</span>
+        <ChevronIcon className="h-4 w-4 shrink-0 text-slate-400" />
+      </Link>
 
       {/* Выход */}
       <div className="card mt-8 border-red-500/20">
@@ -147,6 +156,24 @@ function GameIcon() {
       <path strokeLinecap="round" strokeLinejoin="round" d="M8 11v4M6 13h4" />
       <circle cx="16" cy="12.5" r="0.75" fill="currentColor" stroke="none" />
       <circle cx="18" cy="14.5" r="0.75" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function PersonPlusIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+      <circle cx="10" cy="8" r="3.5" />
+      <path strokeLinecap="round" d="M3.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" />
+      <path strokeLinecap="round" d="M19 8v4M17 10h4" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m9 6 6 6-6 6" />
     </svg>
   );
 }

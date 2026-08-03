@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { LOCALE_HTML_LANG } from "@/lib/i18n/locales";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -8,8 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const isDark = cookies().get("theme")?.value === "dark";
+  const locale = getLocale();
+
   return (
-    <html lang="ru">
+    <html lang={LOCALE_HTML_LANG[locale]} className={isDark ? "dark" : undefined}>
       <body>{children}</body>
     </html>
   );

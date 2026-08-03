@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupportChatModal } from "@/components/SupportChatModal";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 // Общий каркас личных страниц: /topup, /profile, /history, /support.
 // Никакого постоянного сайдбара — общая шапка с выпадающим меню (та же,
@@ -14,6 +16,7 @@ export default async function DashboardGroupLayout({
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  const dict = getDictionary(getLocale());
 
   const [notifications, messages] = await Promise.all([
     prisma.notification.findMany({
@@ -33,6 +36,7 @@ export default async function DashboardGroupLayout({
       <div className="mx-auto max-w-5xl px-6">
         <SiteHeader
           user={{ name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }}
+          dict={dict}
         />
       </div>
       {children}

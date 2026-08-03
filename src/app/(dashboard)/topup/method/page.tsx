@@ -49,7 +49,7 @@ export default async function TopUpMethodPage({
               href={`/topup/pay?amount=${amount}&method=${m.id}`}
               className="card flex items-center gap-4 transition-all duration-300 hover:scale-[1.01] hover:border-brand/40"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-ink-800">
                 {m.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={m.logoUrl} alt={m.bankName} className="h-full w-full object-contain p-2" />

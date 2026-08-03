@@ -8,6 +8,7 @@ import { Avatar } from "@/components/Avatar";
 import { MobileNavBar } from "@/components/MobileNavBar";
 import { logoutAction } from "@/app/actions/auth";
 import type { Role } from "@prisma/client";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 export type SiteHeaderUser = {
   name: string;
@@ -21,18 +22,25 @@ export type SiteHeaderSearch = {
   onChange: (value: string) => void;
 };
 
-const NAV_ITEMS = [
-  { href: "/", label: "Меню" },
-  { href: "/history", label: "История" },
-  { href: "/topup", label: "Пополнить" },
-];
-
 // Общая шапка для каталога и всех личных страниц (история/пополнение/профиль).
 // Постоянная горизонтальная навигация (Меню/История/Пополнить) видна всегда —
 // и гостю, и пользователю; для гостя клик по Истории/Пополнить уводит на
 // логин через middleware. Профиль/Админка/Выход — в выпадающем меню аватарки.
-export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; search?: SiteHeaderSearch }) {
+export function SiteHeader({
+  user,
+  search,
+  dict,
+}: {
+  user: SiteHeaderUser | null;
+  search?: SiteHeaderSearch;
+  dict: Dictionary;
+}) {
   const [open, setOpen] = useState(false);
+  const navItems = [
+    { href: "/", label: dict.nav.menu },
+    { href: "/history", label: dict.nav.history },
+    { href: "/topup", label: dict.nav.topup },
+  ];
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
@@ -89,11 +97,11 @@ export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; sear
             </button>
 
             {open && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-lg">
+              <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-2xl border border-slate-200 bg-ink-800 py-1.5 shadow-lg">
                 <div className="truncate border-b border-slate-100 px-4 py-2 text-sm font-semibold">
                   {user.name}
                 </div>
-                <MenuLink href="/profile" onNavigate={() => setOpen(false)}>Профиль</MenuLink>
+                <MenuLink href="/profile" onNavigate={() => setOpen(false)}>{dict.nav.profile}</MenuLink>
                 {user.role === "admin" && (
                   <MenuLink href="/admin" onNavigate={() => setOpen(false)} className="text-amber-600">
                     Админ-панель
@@ -113,7 +121,7 @@ export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; sear
       </div>
 
       <nav className="mt-3 hidden items-center gap-4 text-sm font-medium sm:flex">
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
             <Link
@@ -131,7 +139,7 @@ export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; sear
         })}
       </nav>
     </header>
-    <MobileNavBar />
+    <MobileNavBar nav={dict.nav} />
     </>
   );
 }

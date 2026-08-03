@@ -14,7 +14,7 @@ export default async function AdminMethodsPage() {
           <details key={m.id} className="card overflow-hidden p-0">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-ink-800">
                   {m.logoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={m.logoUrl} alt="" className="h-full w-full object-contain p-1" />

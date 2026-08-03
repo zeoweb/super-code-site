@@ -1,23 +1,40 @@
 import type { Config } from "tailwindcss";
 
+// ink/slate завязаны на CSS-переменные (см. globals.css: :root vs .dark) —
+// это даёт тёмную тему без переписывания каждого файла: те же классы
+// (bg-ink-800, text-slate-600 и т.п.) сами перекрашиваются при переключении.
+function cssVar(name: string) {
+  return `rgb(var(${name}) / <alpha-value>)`;
+}
+
 const config: Config = {
+  darkMode: "class",
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // Фирменные цвета: светлый минимализм + сине-фиолетовый акцент.
         brand: {
           DEFAULT: "#5B4FE0",
           dark: "#4636C4",
           light: "#6C5DD3",
         },
-        // "ink" исторически был тёмным фоном — теперь это светлая шкала
-        // поверхностей (900 = фон страницы, 800 = карточки, 700/600 = ховеры).
+        // 900 = фон страницы, 800 = карточки, 700/600 = ховеры/бордеры.
         ink: {
-          900: "#F5F5FA",
-          800: "#FFFFFF",
-          700: "#F1F1F6",
-          600: "#E4E4EC",
+          900: cssVar("--ink-900"),
+          800: cssVar("--ink-800"),
+          700: cssVar("--ink-700"),
+          600: cssVar("--ink-600"),
+        },
+        slate: {
+          50: cssVar("--slate-50"),
+          100: cssVar("--slate-100"),
+          200: cssVar("--slate-200"),
+          300: cssVar("--slate-300"),
+          400: cssVar("--slate-400"),
+          500: cssVar("--slate-500"),
+          600: cssVar("--slate-600"),
+          700: cssVar("--slate-700"),
+          900: cssVar("--slate-900"),
         },
       },
       boxShadow: {

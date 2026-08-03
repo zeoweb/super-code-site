@@ -25,10 +25,10 @@ export function AuthCharacter({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="relative rounded-2xl border border-slate-200 bg-white px-4 py-2 text-center text-sm font-medium text-slate-900 shadow-md"
+            className="relative rounded-2xl border border-slate-200 bg-ink-800 px-4 py-2 text-center text-sm font-medium text-slate-900 shadow-md"
           >
             {message}
-            <div className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-slate-200 bg-white" />
+            <div className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-slate-200 bg-ink-800" />
           </motion.div>
         </AnimatePresence>
       </div>

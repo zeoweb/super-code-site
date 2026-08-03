@@ -3,10 +3,19 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { SiteHeader, type SiteHeaderUser } from "@/components/SiteHeader";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type Game = { id: string; slug: string; title: string; imageUrl: string | null };
 
-export function CatalogClient({ user, games }: { user: SiteHeaderUser | null; games: Game[] }) {
+export function CatalogClient({
+  user,
+  games,
+  dict,
+}: {
+  user: SiteHeaderUser | null;
+  games: Game[];
+  dict: Dictionary;
+}) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -17,7 +26,7 @@ export function CatalogClient({ user, games }: { user: SiteHeaderUser | null; ga
 
   return (
     <>
-      <SiteHeader user={user} search={{ value: query, onChange: setQuery }} />
+      <SiteHeader user={user} search={{ value: query, onChange: setQuery }} dict={dict} />
 
       {filtered.length === 0 ? (
         <p className="mt-12 text-center text-sm text-slate-600">

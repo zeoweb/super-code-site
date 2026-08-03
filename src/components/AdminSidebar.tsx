@@ -101,7 +101,7 @@ function NavCategoryBlock({ entry, pathname }: { entry: Category; pathname: stri
                 href={c.href}
                 className={
                   "block rounded-lg px-3 py-1.5 transition-colors duration-300 " +
-                  (isActive ? "bg-slate-100 text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900")
+                  (isActive ? "bg-slate-100 text-brand-light" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900")
                 }
               >
                 {c.label}

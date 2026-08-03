@@ -2,12 +2,15 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { CatalogClient } from "@/components/CatalogClient";
 import { SupportChatModal } from "@/components/SupportChatModal";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 // Единая витрина игр — одинаковая для гостя и для залогиненного пользователя.
 // Разница только в шапке: у гостя кнопка "Войти", у пользователя — баланс и
 // аватар с выпадающим меню (история/пополнение/профиль/админка).
 export default async function CatalogPage() {
   const user = await getCurrentUser();
+  const dict = getDictionary(getLocale());
 
   const [games, notifications, messages] = await Promise.all([
     prisma.game.findMany({ where: { isActive: true }, orderBy: { orderIndex: "asc" } }),
@@ -28,6 +31,7 @@ export default async function CatalogPage() {
             : null
         }
         games={games.map((g) => ({ id: g.id, slug: g.slug, title: g.title, imageUrl: g.imageUrl }))}
+        dict={dict}
       />
 
       {user && (
