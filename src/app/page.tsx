@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { SiteHeader } from "@/components/SiteHeader";
+import { CatalogClient } from "@/components/CatalogClient";
 import { SupportChatModal } from "@/components/SupportChatModal";
 
 // Единая витрина игр — одинаковая для гостя и для залогиненного пользователя.
@@ -22,41 +21,14 @@ export default async function CatalogPage() {
 
   return (
     <main className="relative mx-auto min-h-screen max-w-5xl overflow-x-clip p-6 pb-16">
-      <SiteHeader
+      <CatalogClient
         user={
           user
             ? { name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }
             : null
         }
+        games={games.map((g) => ({ id: g.id, slug: g.slug, title: g.title, imageUrl: g.imageUrl }))}
       />
-
-      {games.length === 0 ? (
-        <p className="mt-12 text-center text-sm text-slate-600">
-          Игры скоро появятся — загляните позже.
-        </p>
-      ) : (
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {games.map((g) => (
-            <Link
-              key={g.id}
-              href={`/games/${g.slug}`}
-              className="card overflow-hidden p-0 transition-all duration-300 hover:scale-[1.02] hover:border-brand/40"
-            >
-              <div className="relative aspect-square bg-ink-800">
-                {g.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={g.imageUrl} alt={g.title} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-3xl">🎮</div>
-                )}
-              </div>
-              <div className="p-3 text-center">
-                <div className="truncate text-sm font-bold">{g.title}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
 
       {user && (
         <SupportChatModal
