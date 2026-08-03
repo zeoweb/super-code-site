@@ -30,8 +30,7 @@ export async function updateProfileName(
   await createSession({ sub: user.id, role: user.role, name });
 
   revalidatePath("/profile");
-  revalidatePath("/dashboard");
-  revalidatePath("/billing");
+  revalidatePath("/");
   return { ok: true };
 }
 
@@ -67,7 +66,7 @@ export async function updateProfilePassword(
   return { ok: true };
 }
 
-// Загрузка/смена аватарки — видна везде: в рейтинге, чатах, сайдбарах.
+// Загрузка/смена аватарки — видна везде: в шапке, профиле, чате поддержки.
 export async function updateAvatar(_prev: ProfileState, formData: FormData): Promise<ProfileState> {
   const user = await getCurrentUser();
   if (!user) return { error: "Требуется вход" };
@@ -87,9 +86,7 @@ export async function updateAvatar(_prev: ProfileState, formData: FormData): Pro
   await prisma.user.update({ where: { id: user.id }, data: { avatarUrl } });
 
   revalidatePath("/profile");
-  revalidatePath("/dashboard");
-  revalidatePath("/leaderboard");
-  revalidatePath("/community");
+  revalidatePath("/");
   revalidatePath("/admin", "layout");
 
   return { ok: true };

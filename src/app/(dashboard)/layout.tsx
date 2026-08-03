@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SupportChatModal } from "@/components/SupportChatModal";
 
-// Общий каркас личного кабинета: /dashboard, /topup, /profile, /history.
-// Каждая страница внутри по-прежнему сама проверяет сессию (defence in depth),
-// здесь — только источник данных для сайдбара и модалки "Чат" (уведомления + поддержка).
+// Общий каркас личных страниц: /topup, /profile, /history, /support.
+// Никакого постоянного сайдбара — общая шапка с выпадающим меню (та же,
+// что и на каталоге /), сама страница ниже рисует свой контент.
 export default async function DashboardGroupLayout({
   children,
 }: {
@@ -29,14 +29,13 @@ export default async function DashboardGroupLayout({
   ]);
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <DashboardSidebar
-        name={user.name}
-        avatarUrl={user.avatarUrl}
-        balance={user.balance.toString()}
-        role={user.role}
-      />
-      <div className="min-w-0 flex-1 pb-28 md:pb-0">{children}</div>
+    <div className="min-h-screen">
+      <div className="mx-auto max-w-5xl px-6">
+        <SiteHeader
+          user={{ name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }}
+        />
+      </div>
+      {children}
       <SupportChatModal
         initialNotifications={notifications.map((n) => ({
           id: n.id,

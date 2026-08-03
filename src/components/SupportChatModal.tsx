@@ -52,7 +52,7 @@ function openModal() {
   }
 
   // Позволяет открыть эту же модалку не только по клику на колокольчик, но и
-  // с других страниц (например, карточка "Активность" на /dashboard).
+  // с других страниц (например, карточка "Активность" на каталоге).
   useEffect(() => {
     window.addEventListener("open-support-chat", openModal);
     return () => window.removeEventListener("open-support-chat", openModal);

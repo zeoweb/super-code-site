@@ -67,4 +67,5 @@ export async function rejectOrder(formData: FormData) {
   revalidatePath("/admin/orders");
   revalidatePath("/history");
   revalidatePath("/profile");
+  revalidatePath("/");
 }

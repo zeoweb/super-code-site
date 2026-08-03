@@ -60,7 +60,7 @@ export async function registerAction(
   await createSession({ sub: user.id, role: user.role, name: user.name });
 
   const returnTo = String(formData.get("returnTo") ?? "");
-  redirect(returnTo && returnTo.startsWith("/") ? returnTo : "/dashboard");
+  redirect(returnTo && returnTo.startsWith("/") ? returnTo : "/");
 }
 
 // --- Вход по email ИЛИ телефону ---
@@ -96,7 +96,7 @@ export async function loginAction(
   await createSession({ sub: user.id, role: user.role, name: user.name });
 
   const returnTo = String(formData.get("returnTo") ?? "");
-  redirect(returnTo && returnTo.startsWith("/") ? returnTo : "/dashboard");
+  redirect(returnTo && returnTo.startsWith("/") ? returnTo : "/");
 }
 
 // --- Выход ---

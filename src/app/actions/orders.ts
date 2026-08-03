@@ -92,6 +92,6 @@ export async function createOrder(formData: FormData): Promise<void> {
 
   revalidatePath("/history");
   revalidatePath("/profile");
-  revalidatePath("/dashboard");
+  revalidatePath("/");
   redirect("/history");
 }

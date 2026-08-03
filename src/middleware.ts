@@ -8,7 +8,7 @@ const SESSION_COOKIE = "sc_session";
 
 // Разделы, требующие входа. /games (каталог и карточка игры) сюда не
 // входит — витрина публичная, вход нужен только на моменте покупки.
-const PROTECTED = ["/dashboard", "/topup", "/profile", "/admin", "/support", "/history"];
+const PROTECTED = ["/topup", "/profile", "/admin", "/support", "/history"];
 // Разделы только для админа
 const ADMIN_ONLY = ["/admin"];
 
@@ -46,7 +46,7 @@ export async function middleware(req: NextRequest) {
   const isAdminArea = ADMIN_ONLY.some((p) => pathname === p || pathname.startsWith(p + "/"));
   if (isAdminArea && payload.role !== "admin") {
     const url = req.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
@@ -55,7 +55,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
     "/topup/:path*",
     "/profile/:path*",
     "/admin/:path*",

@@ -41,6 +41,7 @@ export async function approveTopUp(formData: FormData) {
   revalidatePath("/admin/topups");
   revalidatePath("/profile");
   revalidatePath("/history");
+  revalidatePath("/");
 }
 
 export async function rejectTopUp(formData: FormData) {

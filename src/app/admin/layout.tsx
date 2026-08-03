@@ -9,7 +9,7 @@ import { AdminMobileNav } from "@/components/AdminMobileNav";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login?returnTo=/admin");
-  if (user.role !== "admin") redirect("/dashboard");
+  if (user.role !== "admin") redirect("/");
 
   return (
     <div className="min-h-screen">
@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </span>
           </div>
           <div className="flex shrink-0 items-center gap-1 text-sm sm:gap-2">
-            <Link href="/dashboard" className="rounded-lg px-2 py-2 transition-colors duration-300 hover:bg-slate-100 sm:px-3">На сайт</Link>
+            <Link href="/" className="rounded-lg px-2 py-2 transition-colors duration-300 hover:bg-slate-100 sm:px-3">На сайт</Link>
             <form action={logoutAction}>
               <button className="rounded-lg px-2 py-2 text-red-600 transition-colors duration-300 hover:bg-slate-100 sm:px-3">Выйти</button>
             </form>
