@@ -44,6 +44,12 @@ export async function createOrder(formData: FormData): Promise<void> {
     if (!valid) {
       redirect(`${back}?error=${encodeURIComponent("Промокод недействителен")}`);
     }
+    const alreadyUsed = await prisma.promoCodeRedemption.findUnique({
+      where: { userId_promoCodeId: { userId: user.id, promoCodeId: found!.id } },
+    });
+    if (alreadyUsed) {
+      redirect(`${back}?error=${encodeURIComponent("Вы уже использовали этот промокод")}`);
+    }
     promo = { id: found!.id, discountPercent: found!.discountPercent };
     price = price.mul(100 - promo.discountPercent).div(100);
   }
@@ -75,6 +81,9 @@ export async function createOrder(formData: FormData): Promise<void> {
 
     if (promo) {
       await tx.promoCode.update({ where: { id: promo.id }, data: { usedCount: { increment: 1 } } });
+      await tx.promoCodeRedemption.create({
+        data: { userId: user.id, promoCodeId: promo.id, orderId: order.id },
+      });
     }
 
     // Реферальный бонус — начисляется пригласившему сразу при покупке.

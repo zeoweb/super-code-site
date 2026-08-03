@@ -14,11 +14,17 @@ export default async function AdminPromoCodesPage() {
 
       <form action={createPromoCode} className="card mt-6 space-y-3">
         <h2 className="font-semibold">Новый промокод</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className="label">Код</label>
             <input name="code" className="input uppercase" placeholder="WELCOME" required />
           </div>
+          <div>
+            <label className="label">Название (для пользователя)</label>
+            <input name="title" className="input" placeholder="Первая покупка" />
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className="label">Скидка, %</label>
             <input name="discountPercent" type="number" min="1" max="100" className="input" required />
@@ -32,6 +38,9 @@ export default async function AdminPromoCodesPage() {
           <label className="label">Действует до (опционально)</label>
           <input name="validUntil" type="date" className="input" />
         </div>
+        <p className="text-xs text-slate-500">
+          Каждый пользователь может применить код только один раз, независимо от общего лимита использований.
+        </p>
         <button className="btn-primary">Создать</button>
       </form>
 
@@ -47,6 +56,7 @@ export default async function AdminPromoCodesPage() {
                   {p.code}{" "}
                   {!p.isActive && <span className="badge text-slate-600">выкл</span>}
                 </div>
+                {p.title && <div className="text-sm font-medium">{p.title}</div>}
                 <div className="text-sm text-slate-500">
                   -{p.discountPercent}% · использован {p.usedCount}
                   {p.maxUses ? ` из ${p.maxUses}` : ""} раз

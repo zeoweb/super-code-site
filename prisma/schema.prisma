@@ -70,6 +70,7 @@ model User {
   balanceTx     BalanceTx[]
   messages      ChatMessage[]
   notifications Notification[]
+  promoRedemptions PromoCodeRedemption[]
 
   @@map("users")
 }
@@ -181,10 +182,13 @@ model PaymentMethod {
   @@map("payment_methods")
 }
 
-// Промокод — процентная скидка на пополнение/покупку.
+// Промокод — процентная скидка на покупку товара в игре. Каждый пользователь
+// может применить конкретный код только один раз (см. PromoCodeRedemption),
+// maxUses/usedCount — отдельный общий лимит на все использования.
 model PromoCode {
   id              String    @id @default(uuid())
   code            String    @unique
+  title           String? // короткое описание для пользователя, напр. "Первая покупка"
   discountPercent Int       @map("discount_percent")
   maxUses         Int?      @map("max_uses")
   usedCount       Int       @default(0) @map("used_count")
@@ -193,7 +197,25 @@ model PromoCode {
   isActive        Boolean   @default(true) @map("is_active")
   createdAt       DateTime  @default(now()) @map("created_at")
 
+  redemptions PromoCodeRedemption[]
+
   @@map("promo_codes")
+}
+
+// Факт использования промокода конкретным пользователем — не даёт применить
+// один и тот же код повторно.
+model PromoCodeRedemption {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  promoCodeId String   @map("promo_code_id")
+  orderId     String?  @map("order_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promoCode PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, promoCodeId])
+  @@map("promo_code_redemptions")
 }
 
 // Статус задачи в разделе "Задачи" админки.

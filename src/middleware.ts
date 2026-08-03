@@ -8,7 +8,7 @@ const SESSION_COOKIE = "sc_session";
 
 // Разделы, требующие входа. /games (каталог и карточка игры) сюда не
 // входит — витрина публичная, вход нужен только на моменте покупки.
-const PROTECTED = ["/topup", "/profile", "/admin", "/support", "/history"];
+const PROTECTED = ["/topup", "/profile", "/admin", "/support", "/history", "/bonus-codes"];
 // Разделы только для админа
 const ADMIN_ONLY = ["/admin"];
 
@@ -60,5 +60,6 @@ export const config = {
     "/admin/:path*",
     "/support/:path*",
     "/history/:path*",
+    "/bonus-codes/:path*",
   ],
 };

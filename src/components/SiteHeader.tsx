@@ -17,22 +17,15 @@ export type SiteHeaderUser = {
   role: Role;
 };
 
-export type SiteHeaderSearch = {
-  value: string;
-  onChange: (value: string) => void;
-};
-
 // Общая шапка для каталога и всех личных страниц (история/пополнение/профиль).
 // Постоянная горизонтальная навигация (Меню/История/Пополнить) видна всегда —
 // и гостю, и пользователю; для гостя клик по Истории/Пополнить уводит на
 // логин через middleware. Профиль/Админка/Выход — в выпадающем меню аватарки.
 export function SiteHeader({
   user,
-  search,
   dict,
 }: {
   user: SiteHeaderUser | null;
-  search?: SiteHeaderSearch;
   dict: Dictionary;
 }) {
   const [open, setOpen] = useState(false);
@@ -60,12 +53,6 @@ export function SiteHeader({
           <NeuroIcon id="neuro-grad-header" className="h-7 w-7" />
           SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>
         </Link>
-
-        {search && (
-          <div className="relative hidden flex-1 max-w-sm sm:block">
-            <SearchInput search={search} />
-          </div>
-        )}
 
         {user ? (
           <div ref={menuRef} className="relative flex shrink-0 items-center gap-2">
@@ -106,12 +93,6 @@ export function SiteHeader({
         )}
       </div>
 
-      {search && (
-        <div className="relative mt-3 sm:hidden">
-          <SearchInput search={search} />
-        </div>
-      )}
-
       <nav className="mt-3 hidden items-center gap-4 text-sm font-medium sm:flex">
         {navItems.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -132,28 +113,6 @@ export function SiteHeader({
       </nav>
     </header>
     <MobileNavBar nav={dict.nav} />
-    </>
-  );
-}
-
-function SearchInput({ search }: { search: SiteHeaderSearch }) {
-  return (
-    <>
-      <svg
-        viewBox="0 0 20 20"
-        fill="none"
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-      >
-        <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M17 17l-3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-      <input
-        type="text"
-        value={search.value}
-        onChange={(e) => search.onChange(e.target.value)}
-        placeholder="Найти игру"
-        className="input py-2 pl-9 text-sm"
-      />
     </>
   );
 }

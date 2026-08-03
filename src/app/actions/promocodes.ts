@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 export async function createPromoCode(formData: FormData) {
   await requireAdmin();
   const code = String(formData.get("code") ?? "").trim().toUpperCase();
+  const title = String(formData.get("title") ?? "").trim();
   const discountPercent = Number(formData.get("discountPercent"));
   if (!code || !Number.isFinite(discountPercent) || discountPercent <= 0 || discountPercent > 100) return;
 
@@ -16,12 +17,14 @@ export async function createPromoCode(formData: FormData) {
   await prisma.promoCode.create({
     data: {
       code,
+      title: title || null,
       discountPercent,
       maxUses: maxUsesRaw ? Number(maxUsesRaw) : null,
       validUntil: validUntilRaw ? new Date(validUntilRaw) : null,
     },
   });
   revalidatePath("/admin/promocodes");
+  revalidatePath("/bonus-codes");
 }
 
 export async function togglePromoCode(formData: FormData) {
@@ -31,6 +34,7 @@ export async function togglePromoCode(formData: FormData) {
   if (!promo) return;
   await prisma.promoCode.update({ where: { id }, data: { isActive: !promo.isActive } });
   revalidatePath("/admin/promocodes");
+  revalidatePath("/bonus-codes");
 }
 
 export async function deletePromoCode(formData: FormData) {
@@ -38,4 +42,5 @@ export async function deletePromoCode(formData: FormData) {
   const id = String(formData.get("id"));
   await prisma.promoCode.delete({ where: { id } });
   revalidatePath("/admin/promocodes");
+  revalidatePath("/bonus-codes");
 }
