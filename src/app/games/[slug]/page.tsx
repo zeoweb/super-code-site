@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
 import { PackagePicker } from "@/components/PackagePicker";
 
 // Публичная страница игры: ввод игрового ID + выбор пакета + покупка с
@@ -12,10 +13,13 @@ export default async function GamePage({
   params: { slug: string };
   searchParams: { error?: string };
 }) {
-  const game = await prisma.game.findUnique({
-    where: { slug: params.slug },
-    include: { packages: { where: { isActive: true }, orderBy: { orderIndex: "asc" } } },
-  });
+  const [game, user] = await Promise.all([
+    prisma.game.findUnique({
+      where: { slug: params.slug },
+      include: { packages: { where: { isActive: true }, orderBy: { orderIndex: "asc" } } },
+    }),
+    getCurrentUser(),
+  ]);
   if (!game || !game.isActive) notFound();
 
   return (
@@ -48,6 +52,7 @@ export default async function GamePage({
             price: p.price.toString(),
           }))}
           error={searchParams.error}
+          balance={user ? user.balance.toString() : null}
         />
       )}
     </main>
