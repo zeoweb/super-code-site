@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NeuroIcon } from "@/components/NeuroIcon";
 import { Avatar } from "@/components/Avatar";
+import { MobileNavBar } from "@/components/MobileNavBar";
 import { logoutAction } from "@/app/actions/auth";
 import type { Role } from "@prisma/client";
 
@@ -44,6 +45,7 @@ export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; sear
   }, []);
 
   return (
+    <>
     <header className="py-4">
       <div className="flex items-center justify-between gap-3">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-black tracking-tight">
@@ -110,7 +112,7 @@ export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; sear
         )}
       </div>
 
-      <nav className="mt-3 flex items-center gap-4 text-sm font-medium">
+      <nav className="mt-3 hidden items-center gap-4 text-sm font-medium sm:flex">
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
@@ -129,6 +131,8 @@ export function SiteHeader({ user, search }: { user: SiteHeaderUser | null; sear
         })}
       </nav>
     </header>
+    <MobileNavBar />
+    </>
   );
 }
 

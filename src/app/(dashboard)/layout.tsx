@@ -29,7 +29,7 @@ export default async function DashboardGroupLayout({
   ]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-24 sm:pb-0">
       <div className="mx-auto max-w-5xl px-6">
         <SiteHeader
           user={{ name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }}

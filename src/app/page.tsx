@@ -20,7 +20,7 @@ export default async function CatalogPage() {
   ]);
 
   return (
-    <main className="relative mx-auto min-h-screen max-w-5xl overflow-x-clip p-6 pb-16">
+    <main className="relative mx-auto min-h-screen max-w-5xl overflow-x-clip p-6 pb-24 sm:pb-16">
       <CatalogClient
         user={
           user
