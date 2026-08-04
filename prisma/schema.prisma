@@ -28,7 +28,8 @@ enum Role {
 enum PackageKind {
   currency // игровая валюта (алмазы, UC и т.п.)
   pass // сезонный/недельный пропуск
-  voucher // ваучер/купон
+  voucher // ваучер/купон/подписка
+  bundle // разовый набор/кейс (напр. Weekly Deal Pack)
 }
 
 enum OrderStatus {

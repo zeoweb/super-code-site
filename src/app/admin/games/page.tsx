@@ -6,8 +6,9 @@ const KIND_OPTIONS: { value: string; label: string }[] = [
   { value: "currency", label: "Валюта" },
   { value: "pass", label: "Пропуск" },
   { value: "voucher", label: "Ваучер" },
+  { value: "bundle", label: "Набор" },
 ];
-const KIND_ORDER = ["currency", "voucher", "pass"];
+const KIND_ORDER = ["currency", "voucher", "pass", "bundle"];
 
 const CATEGORY_OPTIONS: { value: string; label: string }[] = [
   { value: "game", label: "Игра" },

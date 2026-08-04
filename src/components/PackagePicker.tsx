@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Gem, Ticket, BadgeCheck } from "lucide-react";
+import { Gem, Ticket, BadgeCheck, Package } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
 import { SubmitButton } from "@/components/SubmitButton";
 import { InsufficientFundsModal } from "@/components/InsufficientFundsModal";
@@ -18,11 +18,12 @@ type PackageItem = {
 
 // Порядок и подписи типов товара — общие для всех игр (конкретные названия
 // вроде "110 алмазов" или "6 Level Up" всегда берутся из title пакета).
-const KIND_ORDER = ["currency", "voucher", "pass"];
+const KIND_ORDER = ["currency", "voucher", "pass", "bundle"];
 const KIND_LABEL: Record<string, string> = {
   currency: "Валюта",
   voucher: "Ваучер",
   pass: "Пропуск",
+  bundle: "Набор",
 };
 
 // Пока нет уникальной картинки под каждый товар — generic-иконка по типу.
@@ -30,9 +31,11 @@ const KIND_ICON: Record<string, typeof Gem> = {
   currency: Gem,
   voucher: Ticket,
   pass: BadgeCheck,
+  bundle: Package,
 };
 const KIND_ICON_BG: Record<string, string> = {
   currency: "bg-sky-500",
+  bundle: "bg-emerald-500",
   voucher: "bg-amber-500",
   pass: "bg-violet-500",
 };
