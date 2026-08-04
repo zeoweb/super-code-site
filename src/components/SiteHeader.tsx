@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NeuroIcon } from "@/components/NeuroIcon";
+import { DiamondIcon } from "@/components/DiamondIcon";
 import { Avatar } from "@/components/Avatar";
 import { MobileNavBar } from "@/components/MobileNavBar";
 import { logoutAction } from "@/app/actions/auth";
@@ -50,7 +50,7 @@ export function SiteHeader({
     <header className="py-4">
       <div className="flex items-center justify-between gap-3">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-black tracking-tight">
-          <NeuroIcon id="neuro-grad-header" className="h-7 w-7" />
+          <DiamondIcon id="diamond-grad-header" className="h-7 w-7" />
           SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>
         </Link>
 
