@@ -40,6 +40,12 @@ const KIND_ICON_BG: Record<string, string> = {
   pass: "bg-violet-500",
 };
 
+// Некоторые игры используют не игровой ID/телефон, а числовой UID и т.п. —
+// подсказка в поле подстраивается по slug игры, сам инпут/лейбл общие.
+const ID_PLACEHOLDER: Record<string, string> = {
+  "genshin-impact": "Введите UID (числовой идентификатор игрока)",
+};
+
 export function PackagePicker({
   gameSlug,
   packages,
@@ -110,7 +116,7 @@ export function PackagePicker({
               setIdChecked(false);
             }}
             className="input flex-1"
-            placeholder="Введите ID или номер телефона"
+            placeholder={ID_PLACEHOLDER[gameSlug] ?? "Введите ID или номер телефона"}
           />
           <button
             type="button"
