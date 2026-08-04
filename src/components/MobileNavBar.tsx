@@ -15,12 +15,14 @@ export function MobileNavBar({ nav }: { nav: Dictionary["nav"] }) {
     { href: "/", label: nav.menu, icon: MenuIcon },
     { href: "/history", label: nav.history, icon: HistoryIcon },
     { href: "/topup", label: nav.topup, icon: TopupIcon },
+    // "Играть" — всегда на русском (не через nav/dict), см. src/app/play.
+    { href: "/play", label: "Играть", icon: PlayIcon },
     { href: "/profile", label: nav.profile, icon: ProfileIcon },
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 sm:hidden">
-      <div className="flex items-center gap-1 rounded-full bg-ink-800 px-2 py-2 shadow-lg">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-2 pb-4 sm:hidden">
+      <div className="flex items-center gap-0.5 rounded-full bg-ink-800 px-1.5 py-2 shadow-lg">
         {items.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;
@@ -28,7 +30,7 @@ export function MobileNavBar({ nav }: { nav: Dictionary["nav"] }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-0.5 rounded-full px-4 py-2 text-[11px] font-medium transition-colors duration-300 ${
+              className={`flex flex-col items-center gap-0.5 rounded-full px-2.5 py-2 text-[10px] font-medium transition-colors duration-300 ${
                 active ? "bg-brand text-white" : "text-slate-500"
               }`}
             >
@@ -68,6 +70,17 @@ function TopupIcon({ className }: { className?: string }) {
       <rect x="2.5" y="5" width="15" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
       <path d="M2.5 8.5h15" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="14" cy="12.5" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function PlayIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className}>
+      <rect x="2" y="7" width="16" height="9" rx="4" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M6.5 9.5v4M4.5 11.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="13" cy="10.5" r="0.9" fill="currentColor" />
+      <circle cx="15" cy="12.5" r="0.9" fill="currentColor" />
     </svg>
   );
 }
