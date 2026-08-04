@@ -23,6 +23,10 @@ const SECTIONS = [
 ] as const;
 type Section = (typeof SECTIONS)[number]["key"];
 
+// Баннер-приглашение зарегистрироваться — только для гостей, ведёт на /register.
+const GUEST_BANNER_URL =
+  "https://kjs2xdvwnbgab6jx.public.blob.vercel-storage.com/logos/03ba406f-b7bc-4142-907b-7cb101e9d96a.jpg";
+
 export function CatalogClient({
   user,
   games,
@@ -49,6 +53,20 @@ export function CatalogClient({
       <SiteHeader user={user} dict={dict} />
 
       {user && <BalanceMiniMenu balance={user.balance} />}
+
+      {!user && (
+        <Link href="/register" className="mt-4 block overflow-hidden rounded-2xl">
+          {/* Картинка баннера сама по себе с чёрным скруглённым краем —
+              увеличиваем и обрезаем контейнером, чтобы не было двойного
+              скругления (свой + контейнера). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={GUEST_BANNER_URL}
+            alt="Зарегистрируйтесь на SuperDonat"
+            className="w-full scale-110 object-cover transition-transform duration-300 hover:scale-[1.15]"
+          />
+        </Link>
+      )}
 
       <div className="mt-4">
         <SearchInput search={{ value: query, onChange: setQuery }} />
