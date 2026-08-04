@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Package } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { PackagePicker } from "@/components/PackagePicker";
@@ -39,7 +40,15 @@ export default async function GamePage({
       </div>
 
       {game.packages.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-600">Товары для этой игры скоро появятся.</p>
+        <div className="mt-16 flex flex-col items-center gap-3 text-center">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+            <Package className="h-7 w-7" />
+          </span>
+          <h2 className="text-lg font-bold">Скоро!</h2>
+          <p className="max-w-xs text-sm text-slate-500">
+            Этот раздел пока пуст, скоро добавим новые пакеты 🚀
+          </p>
+        </div>
       ) : (
         <PackagePicker
           gameSlug={game.slug}
