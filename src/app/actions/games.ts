@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin-guard";
 import { saveUploadedLogo } from "@/lib/storage";
-import type { PackageKind } from "@prisma/client";
+import type { GameCategory, PackageKind } from "@prisma/client";
+
+const GAME_CATEGORIES: GameCategory[] = ["game", "service", "software"];
 
 function slugify(text: string): string {
   return text
@@ -21,10 +23,12 @@ export async function createGame(formData: FormData) {
   if (!title) return;
 
   const count = await prisma.game.count();
-  const data: { title: string; slug: string; orderIndex: number; imageUrl?: string } = {
+  const categoryRaw = String(formData.get("category") ?? "game");
+  const data: { title: string; slug: string; orderIndex: number; category: GameCategory; imageUrl?: string } = {
     title,
     slug: slugify(title) || `game-${count + 1}`,
     orderIndex: count,
+    category: GAME_CATEGORIES.includes(categoryRaw as GameCategory) ? (categoryRaw as GameCategory) : "game",
   };
 
   const image = formData.get("image");
@@ -47,9 +51,11 @@ export async function updateGame(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return;
 
-  const data: { title: string; isActive: boolean; imageUrl?: string } = {
+  const categoryRaw = String(formData.get("category") ?? "game");
+  const data: { title: string; isActive: boolean; category: GameCategory; imageUrl?: string } = {
     title,
     isActive: formData.get("isActive") === "on",
+    category: GAME_CATEGORIES.includes(categoryRaw as GameCategory) ? (categoryRaw as GameCategory) : "game",
   };
 
   const image = formData.get("image");

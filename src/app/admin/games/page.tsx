@@ -8,6 +8,12 @@ const KIND_OPTIONS: { value: string; label: string }[] = [
   { value: "voucher", label: "Ваучер" },
 ];
 
+const CATEGORY_OPTIONS: { value: string; label: string }[] = [
+  { value: "game", label: "Игра" },
+  { value: "service", label: "Сервис" },
+  { value: "software", label: "Софт" },
+];
+
 export default async function AdminGamesPage() {
   const games = await prisma.game.findMany({
     orderBy: { orderIndex: "asc" },
@@ -35,7 +41,9 @@ export default async function AdminGamesPage() {
                   <div className="truncate font-medium">
                     {g.title} {!g.isActive && <span className="badge text-slate-600">выкл</span>}
                   </div>
-                  <div className="truncate text-sm text-slate-500">{g.packages.length} товаров</div>
+                  <div className="truncate text-sm text-slate-500">
+                    {CATEGORY_OPTIONS.find((c) => c.value === g.category)?.label ?? g.category} · {g.packages.length} товаров
+                  </div>
                 </div>
               </div>
             </summary>
@@ -46,6 +54,14 @@ export default async function AdminGamesPage() {
                 <div>
                   <label className="label">Название</label>
                   <input name="title" defaultValue={g.title} className="input" required />
+                </div>
+                <div>
+                  <label className="label">Раздел</label>
+                  <select name="category" defaultValue={g.category} className="input">
+                    {CATEGORY_OPTIONS.map((c) => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="label">Картинка</label>
@@ -122,6 +138,14 @@ export default async function AdminGamesPage() {
         <div>
           <label className="label">Название</label>
           <input name="title" className="input" placeholder="Напр. PUBG Mobile" required />
+        </div>
+        <div>
+          <label className="label">Раздел</label>
+          <select name="category" defaultValue="game" className="input">
+            {CATEGORY_OPTIONS.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="label">Картинка</label>

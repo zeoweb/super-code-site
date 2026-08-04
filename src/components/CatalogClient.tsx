@@ -6,12 +6,13 @@ import { SiteHeader, type SiteHeaderUser } from "@/components/SiteHeader";
 import { SearchInput } from "@/components/SearchInput";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
-type Game = { id: string; slug: string; title: string; imageUrl: string | null };
+type GameCategory = "game" | "service" | "software";
+type Game = { id: string; slug: string; title: string; imageUrl: string | null; category: GameCategory };
 
 const SECTIONS = [
-  { key: "games", label: "Игры" },
-  { key: "services", label: "Сервисы" },
-  { key: "soft", label: "Софт" },
+  { key: "games", label: "Игры", category: "game" },
+  { key: "services", label: "Сервисы", category: "service" },
+  { key: "soft", label: "Софт", category: "software" },
 ] as const;
 type Section = (typeof SECTIONS)[number]["key"];
 
@@ -27,11 +28,14 @@ export function CatalogClient({
   const [query, setQuery] = useState("");
   const [section, setSection] = useState<Section>("games");
 
+  const sectionCategory = SECTIONS.find((s) => s.key === section)!.category;
+  const inSection = useMemo(() => games.filter((g) => g.category === sectionCategory), [games, sectionCategory]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return games;
-    return games.filter((g) => g.title.toLowerCase().includes(q));
-  }, [games, query]);
+    if (!q) return inSection;
+    return inSection.filter((g) => g.title.toLowerCase().includes(q));
+  }, [inSection, query]);
 
   return (
     <>
@@ -59,11 +63,9 @@ export function CatalogClient({
         ))}
       </div>
 
-      {section !== "games" ? (
-        <p className="mt-12 text-center text-sm text-slate-600">Раздел скоро появится.</p>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <p className="mt-12 text-center text-sm text-slate-600">
-          {games.length === 0 ? "Игры скоро появятся — загляните позже." : "Ничего не найдено"}
+          {query.trim() ? "Ничего не найдено" : "Раздел скоро появится."}
         </p>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">

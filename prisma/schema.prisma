@@ -76,15 +76,27 @@ model User {
   @@map("users")
 }
 
-// Игра, доступная для пополнения (PUBG Mobile, Free Fire и т.п.).
+// Раздел каталога — определяет, под какой вкладкой (Игры/Сервисы/Софт)
+// показывается запись.
+enum GameCategory {
+  game
+  service
+  software
+}
+
+// Позиция каталога — игра, сервис (Telegram Premium и т.п.) или софт.
+// Название модели/таблицы оставлено как есть (Game/games), чтобы не менять
+// весь остальной код (Package/Order уже ссылаются на неё) — category лишь
+// уточняет, чем именно является запись.
 model Game {
-  id         String   @id @default(uuid())
+  id         String       @id @default(uuid())
   title      String
-  slug       String   @unique
-  imageUrl   String?  @map("image_url")
-  isActive   Boolean  @default(true) @map("is_active")
-  orderIndex Int      @default(0) @map("order_index")
-  createdAt  DateTime @default(now()) @map("created_at")
+  slug       String       @unique
+  imageUrl   String?      @map("image_url")
+  category   GameCategory @default(game)
+  isActive   Boolean      @default(true) @map("is_active")
+  orderIndex Int          @default(0) @map("order_index")
+  createdAt  DateTime     @default(now()) @map("created_at")
 
   packages Package[]
   orders   Order[]
