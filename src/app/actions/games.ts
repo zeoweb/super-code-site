@@ -24,11 +24,19 @@ export async function createGame(formData: FormData) {
 
   const count = await prisma.game.count();
   const categoryRaw = String(formData.get("category") ?? "game");
-  const data: { title: string; slug: string; orderIndex: number; category: GameCategory; imageUrl?: string } = {
+  const data: {
+    title: string;
+    slug: string;
+    orderIndex: number;
+    category: GameCategory;
+    badgeLabel: string | null;
+    imageUrl?: string;
+  } = {
     title,
     slug: slugify(title) || `game-${count + 1}`,
     orderIndex: count,
     category: GAME_CATEGORIES.includes(categoryRaw as GameCategory) ? (categoryRaw as GameCategory) : "game",
+    badgeLabel: String(formData.get("badgeLabel") ?? "").trim() || null,
   };
 
   const image = formData.get("image");
@@ -52,10 +60,17 @@ export async function updateGame(formData: FormData) {
   if (!title) return;
 
   const categoryRaw = String(formData.get("category") ?? "game");
-  const data: { title: string; isActive: boolean; category: GameCategory; imageUrl?: string } = {
+  const data: {
+    title: string;
+    isActive: boolean;
+    category: GameCategory;
+    badgeLabel: string | null;
+    imageUrl?: string;
+  } = {
     title,
     isActive: formData.get("isActive") === "on",
     category: GAME_CATEGORIES.includes(categoryRaw as GameCategory) ? (categoryRaw as GameCategory) : "game",
+    badgeLabel: String(formData.get("badgeLabel") ?? "").trim() || null,
   };
 
   const image = formData.get("image");

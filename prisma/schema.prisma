@@ -94,6 +94,7 @@ model Game {
   title      String
   slug       String       @unique
   imageUrl   String?      @map("image_url")
+  badgeLabel String?      @map("badge_label") // короткая метка-ленточка на карточке ("TOP", "GLOBAL"…), пусто — не показывать
   category   GameCategory @default(game)
   isActive   Boolean      @default(true) @map("is_active")
   orderIndex Int          @default(0) @map("order_index")

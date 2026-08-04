@@ -7,7 +7,14 @@ import { SearchInput } from "@/components/SearchInput";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type GameCategory = "game" | "service" | "software";
-type Game = { id: string; slug: string; title: string; imageUrl: string | null; category: GameCategory };
+type Game = {
+  id: string;
+  slug: string;
+  title: string;
+  imageUrl: string | null;
+  category: GameCategory;
+  badgeLabel: string | null;
+};
 
 const SECTIONS = [
   { key: "games", label: "Игры", category: "game" },
@@ -76,6 +83,11 @@ export function CatalogClient({
               className="card overflow-hidden p-0 transition-all duration-300 hover:scale-[1.02] hover:border-brand/40"
             >
               <div className="relative aspect-square bg-ink-800">
+                {g.badgeLabel && (
+                  <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
+                    {g.badgeLabel}
+                  </span>
+                )}
                 {g.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={g.imageUrl} alt={g.title} className="h-full w-full object-cover" />

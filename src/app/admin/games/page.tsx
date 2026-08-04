@@ -66,6 +66,10 @@ export default async function AdminGamesPage() {
                   </select>
                 </div>
                 <div>
+                  <label className="label">Бейдж на карточке (опционально)</label>
+                  <input name="badgeLabel" defaultValue={g.badgeLabel ?? ""} className="input" placeholder="TOP, GLOBAL, NEW…" />
+                </div>
+                <div>
                   <label className="label">Картинка</label>
                   <input name="image" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
                 </div>
@@ -170,6 +174,10 @@ export default async function AdminGamesPage() {
               <option key={c.value} value={c.value}>{c.label}</option>
             ))}
           </select>
+        </div>
+        <div>
+          <label className="label">Бейдж на карточке (опционально)</label>
+          <input name="badgeLabel" className="input" placeholder="TOP, GLOBAL, NEW…" />
         </div>
         <div>
           <label className="label">Картинка</label>

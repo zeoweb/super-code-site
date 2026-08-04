@@ -30,7 +30,14 @@ export default async function CatalogPage() {
             ? { name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }
             : null
         }
-        games={games.map((g) => ({ id: g.id, slug: g.slug, title: g.title, imageUrl: g.imageUrl, category: g.category }))}
+        games={games.map((g) => ({
+          id: g.id,
+          slug: g.slug,
+          title: g.title,
+          imageUrl: g.imageUrl,
+          category: g.category,
+          badgeLabel: g.badgeLabel,
+        }))}
         dict={dict}
       />
 
