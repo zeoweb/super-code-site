@@ -32,7 +32,7 @@ export function SiteHeader({
   const navItems = [
     { href: "/", label: dict.nav.menu },
     { href: "/history", label: dict.nav.history },
-    { href: "/topup", label: dict.nav.topup },
+    { href: "/about", label: dict.nav.about },
     // "Играть" — отдельный раздел, всегда на русском (не через dict), см. src/app/play.
     { href: "/play", label: "Играть" },
   ];

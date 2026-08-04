@@ -14,7 +14,7 @@ export function MobileNavBar({ nav }: { nav: Dictionary["nav"] }) {
   const items = [
     { href: "/", label: nav.menu, icon: MenuIcon },
     { href: "/history", label: nav.history, icon: HistoryIcon },
-    { href: "/topup", label: nav.topup, icon: TopupIcon },
+    { href: "/about", label: nav.about, icon: InfoIcon },
     // "Играть" — всегда на русском (не через nav/dict), см. src/app/play.
     { href: "/play", label: "Играть", icon: PlayIcon },
     { href: "/profile", label: nav.profile, icon: ProfileIcon },
@@ -64,12 +64,12 @@ function HistoryIcon({ className }: { className?: string }) {
   );
 }
 
-function TopupIcon({ className }: { className?: string }) {
+function InfoIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className}>
-      <rect x="2.5" y="5" width="15" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M2.5 8.5h15" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="14" cy="12.5" r="1" fill="currentColor" />
+      <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 9v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="10" cy="6.3" r="1" fill="currentColor" />
     </svg>
   );
 }

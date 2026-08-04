@@ -71,6 +71,7 @@ model User {
   messages      ChatMessage[]
   notifications Notification[]
   promoRedemptions PromoCodeRedemption[]
+  reviews       Review[]
 
   @@map("users")
 }
@@ -216,6 +217,22 @@ model PromoCodeRedemption {
 
   @@unique([userId, promoCodeId])
   @@map("promo_code_redemptions")
+}
+
+// Отзыв на странице "О нас". userId — обычные отзывы через форму (только
+// зарегистрированные пользователи); null — отзывы, добавленные админом
+// вручную (перенос со старого бота), name тогда вводится вручную.
+model Review {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  name      String
+  text      String
+  rating    Int?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("reviews")
 }
 
 // Статус задачи в разделе "Задачи" админки.

@@ -26,6 +26,7 @@ const NAV: NavEntry[] = [
   { type: "leaf", href: "/admin/finance", label: "Финансы", icon: FinanceIcon },
   { type: "leaf", href: "/admin/users", label: "Пользователи", icon: StudentsIcon },
   { type: "leaf", href: "/admin/games", label: "Игры и товары", icon: BookIcon },
+  { type: "leaf", href: "/admin/reviews", label: "Отзывы", icon: StarIcon },
   { type: "leaf", href: "/admin/chats", label: "Чаты", icon: ChatIcon },
 ];
 
@@ -170,6 +171,17 @@ function BookIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" {...props}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.25C10.5 5 8 4.5 4.5 5v13c3.5-.5 6 0 7.5 1.25M12 6.25C13.5 5 16 4.5 19.5 5v13c-3.5-.5-6 0-7.5 1.25M12 6.25v13" />
+    </svg>
+  );
+}
+
+function StarIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" {...props}>
+      <path
+        strokeLinejoin="round"
+        d="M12 3l2.8 5.7 6.3.9-4.55 4.44 1.07 6.26L12 17.4l-5.62 2.9 1.07-6.26L2.9 9.6l6.3-.9L12 3Z"
+      />
     </svg>
   );
 }

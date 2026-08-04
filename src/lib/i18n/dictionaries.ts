@@ -7,7 +7,7 @@ const ru = {
   nav: {
     menu: "Меню",
     history: "История",
-    topup: "Пополнить",
+    about: "О нас",
     profile: "Профиль",
   },
   settings: {
@@ -21,7 +21,7 @@ const tj: typeof ru = {
   nav: {
     menu: "Меню",
     history: "Таърих",
-    topup: "Пур кардан",
+    about: "Дар бораи мо",
     profile: "Танзимот",
   },
   settings: {
@@ -35,7 +35,7 @@ const en: typeof ru = {
   nav: {
     menu: "Menu",
     history: "History",
-    topup: "Top up",
+    about: "About",
     profile: "Profile",
   },
   settings: {
