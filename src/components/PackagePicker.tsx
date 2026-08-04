@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { Gem, Ticket, BadgeCheck, Package } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
-import { SubmitButton } from "@/components/SubmitButton";
 import { InsufficientFundsModal } from "@/components/InsufficientFundsModal";
+import { ConfirmOrderModal } from "@/components/ConfirmOrderModal";
 
 type PackageItem = {
   id: string;
@@ -48,11 +48,15 @@ const ID_PLACEHOLDER: Record<string, string> = {
 
 export function PackagePicker({
   gameSlug,
+  gameTitle,
+  itemTypeLabel,
   packages,
   error,
   balance,
 }: {
   gameSlug: string;
+  gameTitle: string;
+  itemTypeLabel: string;
   packages: PackageItem[];
   error?: string;
   balance: string | null;
@@ -71,6 +75,7 @@ export function PackagePicker({
   const [gameIdentifier, setGameIdentifier] = useState("");
   const [idChecked, setIdChecked] = useState(false);
   const [showInsufficient, setShowInsufficient] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const regionPackages = useMemo(
     () => (regions.length > 0 ? packages.filter((p) => p.region === region) : packages),
@@ -96,11 +101,13 @@ export function PackagePicker({
     setSelected(null);
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    if (selectedPackage && balance !== null && Number(balance) < Number(selectedPackage.price)) {
-      e.preventDefault();
+  function handleBuyClick() {
+    if (!selectedPackage) return;
+    if (balance !== null && Number(balance) < Number(selectedPackage.price)) {
       setShowInsufficient(true);
+      return;
     }
+    setShowConfirm(true);
   }
 
   return (
@@ -228,7 +235,7 @@ export function PackagePicker({
 
       {error && <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>}
 
-      <form id="order-form" action={createOrder} onSubmit={handleSubmit}>
+      <form id="order-form" action={createOrder}>
         <input type="hidden" name="gameSlug" value={gameSlug} />
         <input type="hidden" name="packageId" value={selected ?? ""} />
         <input type="hidden" name="gameIdentifier" value={gameIdentifier} />
@@ -236,15 +243,27 @@ export function PackagePicker({
         {selectedPackage && (
           <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-ink-800/95 p-4 backdrop-blur-xl">
             <div className="mx-auto max-w-xl">
-              <SubmitButton
-                className="btn-primary w-full disabled:opacity-40"
-                pendingText="Оформляем…"
+              <button
+                type="button"
+                onClick={handleBuyClick}
                 disabled={!gameIdentifier.trim()}
+                className="btn-primary w-full disabled:opacity-40"
               >
                 Купить — {selectedPackage.price} сомони
-              </SubmitButton>
+              </button>
             </div>
           </div>
+        )}
+
+        {showConfirm && selectedPackage && (
+          <ConfirmOrderModal
+            itemTypeLabel={itemTypeLabel}
+            gameTitle={gameTitle}
+            productTitle={selectedPackage.title}
+            playerId={gameIdentifier}
+            price={selectedPackage.price}
+            onClose={() => setShowConfirm(false)}
+          />
         )}
       </form>
 

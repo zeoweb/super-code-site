@@ -5,6 +5,12 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { PackagePicker } from "@/components/PackagePicker";
 
+const CATEGORY_LABEL: Record<string, string> = {
+  game: "Игра",
+  service: "Сервис",
+  software: "Софт",
+};
+
 // Публичная страница игры: ввод игрового ID + выбор пакета + покупка с
 // баланса. Доступна без входа — вход требуется только при отправке формы.
 export default async function GamePage({
@@ -52,6 +58,8 @@ export default async function GamePage({
       ) : (
         <PackagePicker
           gameSlug={game.slug}
+          gameTitle={game.title}
+          itemTypeLabel={CATEGORY_LABEL[game.category] ?? "Игра"}
           packages={game.packages.map((p) => ({
             id: p.id,
             region: p.region,
