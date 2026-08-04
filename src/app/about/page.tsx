@@ -5,9 +5,8 @@ import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupportChatModal } from "@/components/SupportChatModal";
-import { StarRatingDisplay } from "@/components/StarRating";
 import { ReviewForm } from "@/components/ReviewForm";
-import { Avatar } from "@/components/Avatar";
+import { ReviewsList } from "@/components/ReviewsList";
 
 const WHY_US = [
   { icon: "🕐", title: "24/7 поддержка", text: "Отвечаем и помогаем в любое время суток." },
@@ -64,20 +63,7 @@ export default async function AboutPage() {
       {reviews.length === 0 ? (
         <p className="mt-4 text-sm text-slate-600">Отзывов пока нет — будьте первым.</p>
       ) : (
-        <div className="mt-4 space-y-3">
-          {reviews.map((r) => (
-            <div key={r.id} className="card">
-              <div className="flex items-center gap-3">
-                <Avatar name={r.name} size="h-9 w-9" textSize="text-sm" />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-medium">{r.name}</div>
-                  <StarRatingDisplay rating={r.rating} />
-                </div>
-              </div>
-              <p className="mt-3 text-sm text-slate-600">{r.text}</p>
-            </div>
-          ))}
-        </div>
+        <ReviewsList reviews={reviews.map((r) => ({ id: r.id, name: r.name, text: r.text, rating: r.rating }))} />
       )}
 
       <div className="mt-4">
