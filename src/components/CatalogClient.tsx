@@ -8,6 +8,13 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type Game = { id: string; slug: string; title: string; imageUrl: string | null };
 
+const SECTIONS = [
+  { key: "games", label: "Игры" },
+  { key: "services", label: "Сервисы" },
+  { key: "soft", label: "Софт" },
+] as const;
+type Section = (typeof SECTIONS)[number]["key"];
+
 export function CatalogClient({
   user,
   games,
@@ -18,6 +25,7 @@ export function CatalogClient({
   dict: Dictionary;
 }) {
   const [query, setQuery] = useState("");
+  const [section, setSection] = useState<Section>("games");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -35,7 +43,25 @@ export function CatalogClient({
         <SearchInput search={{ value: query, onChange: setQuery }} />
       </div>
 
-      {filtered.length === 0 ? (
+      <div className="mt-4 grid grid-cols-3 gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-1.5">
+        {SECTIONS.map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => setSection(s.key)}
+            className={
+              "rounded-xl py-2.5 text-center text-sm font-semibold transition-all duration-300 " +
+              (section === s.key ? "bg-brand-gradient text-white shadow-glow" : "text-slate-600 hover:text-slate-900")
+            }
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {section !== "games" ? (
+        <p className="mt-12 text-center text-sm text-slate-600">Раздел скоро появится.</p>
+      ) : filtered.length === 0 ? (
         <p className="mt-12 text-center text-sm text-slate-600">
           {games.length === 0 ? "Игры скоро появятся — загляните позже." : "Ничего не найдено"}
         </p>
