@@ -40,11 +40,6 @@ const KIND_ICON_BG: Record<string, string> = {
   pass: "bg-violet-500",
 };
 
-// Стандартный набор регионов — показываем все три, даже если для части из
-// них пока нет пакетов (админ дозаполнит через admin/games). Любые другие
-// регионы, встреченные в данных, добавляются вслед за стандартными.
-const STANDARD_REGIONS = ["GLOBAL", "IN", "BR"];
-
 export function PackagePicker({
   gameSlug,
   packages,
@@ -56,15 +51,13 @@ export function PackagePicker({
   error?: string;
   balance: string | null;
 }) {
-  const regionsFromData = useMemo(
+  // Регион показывается только если у игры реально больше одного региона
+  // среди товаров — если он один (или не задан вовсе), секция скрывается
+  // и сразу видна "Тип товара" (см. PUBG Mobile — только GLOBAL).
+  const regions = useMemo(
     () => Array.from(new Set(packages.map((p) => p.region).filter((r): r is string => !!r))),
     [packages],
   );
-  const regions = useMemo(() => {
-    if (regionsFromData.length === 0) return [];
-    const extras = regionsFromData.filter((r) => !STANDARD_REGIONS.includes(r));
-    return [...STANDARD_REGIONS, ...extras];
-  }, [regionsFromData]);
 
   const [region, setRegion] = useState<string | null>(regions[0] ?? null);
   const [kind, setKind] = useState<string | null>(null);
@@ -131,7 +124,7 @@ export function PackagePicker({
         {idChecked && <p className="mt-1.5 text-xs text-emerald-600">✓ ID сохранён</p>}
       </div>
 
-      {regions.length > 0 && (
+      {regions.length > 1 && (
         <div>
           <p className="label">Регион</p>
           <div className="flex flex-wrap gap-2">
