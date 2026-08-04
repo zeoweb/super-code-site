@@ -33,6 +33,8 @@ export function SiteHeader({
     { href: "/", label: dict.nav.menu },
     { href: "/history", label: dict.nav.history },
     { href: "/topup", label: dict.nav.topup },
+    // "Играть" — отдельный раздел, всегда на русском (не через dict), см. src/app/play.
+    { href: "/play", label: "Играть" },
   ];
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
