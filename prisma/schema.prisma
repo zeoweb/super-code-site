@@ -111,6 +111,7 @@ model Package {
   region     String? // "GLOBAL" | "IN" | "BR" ... — не у всех игр есть регионы
   kind       PackageKind @default(currency)
   title      String // напр. "110 алмазов", "Weekly Pass"
+  imageUrl   String?     @map("image_url") // пока нет — на витрине используется generic-иконка по kind
   amount     Int         @default(0) // кол-во игровой валюты, 0 для пропусков/ваучеров
   price      Decimal     @db.Decimal(10, 2)
   isActive   Boolean     @default(true) @map("is_active")

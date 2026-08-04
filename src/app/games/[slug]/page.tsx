@@ -50,6 +50,7 @@ export default async function GamePage({
             title: p.title,
             amount: p.amount,
             price: p.price.toString(),
+            imageUrl: p.imageUrl,
           }))}
           error={searchParams.error}
           balance={user ? user.balance.toString() : null}

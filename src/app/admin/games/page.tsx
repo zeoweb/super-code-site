@@ -113,6 +113,13 @@ export default async function AdminGamesPage() {
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                   ))}
                                 </select>
+                                <div className="flex items-center gap-2">
+                                  {p.imageUrl && (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={p.imageUrl} alt="" className="h-8 w-8 shrink-0 rounded-lg object-cover" />
+                                  )}
+                                  <input name="image" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
+                                </div>
                                 <label className="flex items-center gap-2 text-sm">
                                   <input type="checkbox" name="isActive" defaultChecked={p.isActive} /> Активен
                                 </label>
@@ -139,6 +146,7 @@ export default async function AdminGamesPage() {
                       <option key={k.value} value={k.value}>{k.label}</option>
                     ))}
                   </select>
+                  <input name="image" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
                   <button className="btn-ghost sm:col-span-2">+ Добавить товар</button>
                 </form>
               </div>

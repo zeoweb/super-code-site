@@ -89,17 +89,35 @@ export async function createPackage(formData: FormData) {
   if (!title || !Number.isFinite(price) || price <= 0) return;
 
   const count = await prisma.package.count({ where: { gameId } });
-  await prisma.package.create({
-    data: {
-      gameId,
-      title,
-      price,
-      amount: Number(formData.get("amount") ?? 0) || 0,
-      region: String(formData.get("region") ?? "").trim() || null,
-      kind: (String(formData.get("kind") ?? "currency") as PackageKind) || "currency",
-      orderIndex: count,
-    },
-  });
+  const data: {
+    gameId: string;
+    title: string;
+    price: number;
+    amount: number;
+    region: string | null;
+    kind: PackageKind;
+    orderIndex: number;
+    imageUrl?: string;
+  } = {
+    gameId,
+    title,
+    price,
+    amount: Number(formData.get("amount") ?? 0) || 0,
+    region: String(formData.get("region") ?? "").trim() || null,
+    kind: (String(formData.get("kind") ?? "currency") as PackageKind) || "currency",
+    orderIndex: count,
+  };
+
+  const image = formData.get("image");
+  if (image instanceof File && image.size > 0) {
+    try {
+      data.imageUrl = await saveUploadedLogo(image);
+    } catch (e) {
+      console.error("Package image upload failed:", e instanceof Error ? e.message : e);
+    }
+  }
+
+  await prisma.package.create({ data });
   revalidatePath("/admin/games");
   revalidatePath("/games");
 }
@@ -111,17 +129,33 @@ export async function updatePackage(formData: FormData) {
   const price = Number(formData.get("price"));
   if (!title || !Number.isFinite(price) || price <= 0) return;
 
-  await prisma.package.update({
-    where: { id },
-    data: {
-      title,
-      price,
-      amount: Number(formData.get("amount") ?? 0) || 0,
-      region: String(formData.get("region") ?? "").trim() || null,
-      kind: (String(formData.get("kind") ?? "currency") as PackageKind) || "currency",
-      isActive: formData.get("isActive") === "on",
-    },
-  });
+  const data: {
+    title: string;
+    price: number;
+    amount: number;
+    region: string | null;
+    kind: PackageKind;
+    isActive: boolean;
+    imageUrl?: string;
+  } = {
+    title,
+    price,
+    amount: Number(formData.get("amount") ?? 0) || 0,
+    region: String(formData.get("region") ?? "").trim() || null,
+    kind: (String(formData.get("kind") ?? "currency") as PackageKind) || "currency",
+    isActive: formData.get("isActive") === "on",
+  };
+
+  const image = formData.get("image");
+  if (image instanceof File && image.size > 0) {
+    try {
+      data.imageUrl = await saveUploadedLogo(image);
+    } catch (e) {
+      console.error("Package image upload failed:", e instanceof Error ? e.message : e);
+    }
+  }
+
+  await prisma.package.update({ where: { id }, data });
   revalidatePath("/admin/games");
   revalidatePath("/games");
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Gem, Ticket, BadgeCheck } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
 import { SubmitButton } from "@/components/SubmitButton";
 import { InsufficientFundsModal } from "@/components/InsufficientFundsModal";
@@ -12,6 +13,7 @@ type PackageItem = {
   title: string;
   amount: number;
   price: string;
+  imageUrl: string | null;
 };
 
 // Порядок и подписи типов товара — общие для всех игр (конкретные названия
@@ -21,6 +23,18 @@ const KIND_LABEL: Record<string, string> = {
   currency: "Валюта",
   voucher: "Ваучер",
   pass: "Пропуск",
+};
+
+// Пока нет уникальной картинки под каждый товар — generic-иконка по типу.
+const KIND_ICON: Record<string, typeof Gem> = {
+  currency: Gem,
+  voucher: Ticket,
+  pass: BadgeCheck,
+};
+const KIND_ICON_BG: Record<string, string> = {
+  currency: "bg-sky-500",
+  voucher: "bg-amber-500",
+  pass: "bg-violet-500",
 };
 
 // Стандартный набор регионов — показываем все три, даже если для части из
@@ -164,27 +178,43 @@ export function PackagePicker({
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-3">
-            {visible.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setSelected(p.id)}
-                className={
-                  "card relative py-4 text-center transition-all duration-300 " +
-                  (selected === p.id ? "border-brand bg-brand-gradient text-white shadow-glow" : "hover:border-brand/40")
-                }
-              >
-                {selected === p.id && (
-                  <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-brand">
-                    <CheckIcon className="h-3 w-3" />
+            {visible.map((p) => {
+              const Icon = KIND_ICON[p.kind] ?? Gem;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelected(p.id)}
+                  className={
+                    "card relative flex flex-col items-center gap-2 py-4 text-center transition-all duration-300 " +
+                    (selected === p.id ? "border-brand bg-brand-gradient text-white shadow-glow" : "hover:border-brand/40")
+                  }
+                >
+                  {selected === p.id && (
+                    <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-brand">
+                      <CheckIcon className="h-3 w-3" />
+                    </span>
+                  )}
+                  <span
+                    className={
+                      "flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full " +
+                      (p.imageUrl ? "bg-ink-700" : (KIND_ICON_BG[p.kind] ?? "bg-slate-500"))
+                    }
+                  >
+                    {p.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.imageUrl} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      <Icon className="h-6 w-6 text-white" />
+                    )}
                   </span>
-                )}
-                <div className="font-semibold">{p.title}</div>
-                <div className={"mt-1 text-sm " + (selected === p.id ? "text-white/90" : "text-slate-500")}>
-                  {p.price} смн
-                </div>
-              </button>
-            ))}
+                  <div className="font-semibold">{p.title}</div>
+                  <div className={"text-sm " + (selected === p.id ? "text-white/90" : "text-slate-500")}>
+                    {p.price} смн
+                  </div>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
