@@ -41,22 +41,19 @@ export function MobileNavBar({ nav }: { nav: Dictionary["nav"] }) {
           })}
         </div>
 
-        {/* "Играть" — отдельная акцентная круглая кнопка, чуть выступающая
-            над общей панелью (не обычный плоский пункт в ряду), всегда на
-            русском (не через nav/dict), см. src/app/play. Подпись плотно
-            под кружком — тот же паттерн "иконка сверху, подпись под ней",
-            что и у остальных 4 пунктов, просто с приподнятой иконкой. */}
-        <Link href="/play" className="flex flex-col items-center gap-0.5 px-1">
-          <span
-            className={`-mt-3.5 flex h-11 w-11 items-center justify-center rounded-full shadow-md transition-transform duration-300 hover:scale-105 ${
-              playActive ? "bg-orange-500" : "bg-orange-400"
-            }`}
-          >
-            <PlayIcon className="h-5 w-5 text-white" />
-          </span>
-          <span className={`text-[10px] font-medium ${playActive ? "text-orange-500" : "text-orange-400"}`}>
-            Играть
-          </span>
+        {/* "Играть" — отдельная акцентная кнопка, чуть выступающая над общей
+            панелью (не обычный плоский пункт в ряду), всегда на русском (не
+            через nav/dict), см. src/app/play. Иконка и подпись — внутри
+            одной капсулы, тот же паттерн "иконка сверху, подпись под ней",
+            что и у остальных 4 пунктов, просто крупнее и приподнято. */}
+        <Link
+          href="/play"
+          className={`-mt-3 flex flex-col items-center gap-0.5 rounded-full px-3 py-2.5 text-[10px] font-bold text-white shadow-md transition-transform duration-300 hover:scale-105 ${
+            playActive ? "bg-orange-500" : "bg-orange-400"
+          }`}
+        >
+          <PlayIcon className="h-5 w-5" />
+          Играть
         </Link>
       </div>
     </nav>
