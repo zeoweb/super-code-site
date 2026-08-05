@@ -15,30 +15,49 @@ export function MobileNavBar({ nav }: { nav: Dictionary["nav"] }) {
     { href: "/", label: nav.menu, icon: MenuIcon },
     { href: "/history", label: nav.history, icon: HistoryIcon },
     { href: "/about", label: nav.about, icon: InfoIcon },
-    // "Играть" — всегда на русском (не через nav/dict), см. src/app/play.
-    { href: "/play", label: "Играть", icon: PlayIcon },
     { href: "/profile", label: nav.profile, icon: ProfileIcon },
   ];
+  const playActive = pathname.startsWith("/play");
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-2 pb-4 sm:hidden">
-      <div className="flex items-center gap-0.5 rounded-full bg-ink-800 px-1.5 py-2 shadow-lg">
-        {items.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center gap-0.5 rounded-full px-2.5 py-2 text-[10px] font-medium transition-colors duration-300 ${
-                active ? "bg-brand text-white" : "text-slate-500"
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-              {item.label}
-            </Link>
-          );
-        })}
+      <div className="flex items-end gap-2">
+        <div className="flex items-center gap-0.5 rounded-full bg-ink-800 px-1.5 py-2 shadow-lg">
+          {items.map((item) => {
+            const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-0.5 rounded-full px-2.5 py-2 text-[10px] font-medium transition-colors duration-300 ${
+                  active ? "bg-brand text-white" : "text-slate-500"
+                }`}
+              >
+                <Icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* "Играть" — отдельная акцентная круглая кнопка, чуть выступающая
+            над общей панелью (не обычный плоский пункт в ряду), всегда на
+            русском (не через nav/dict), см. src/app/play. Подпись плотно
+            под кружком — тот же паттерн "иконка сверху, подпись под ней",
+            что и у остальных 4 пунктов, просто с приподнятой иконкой. */}
+        <Link href="/play" className="flex flex-col items-center gap-0.5 px-1">
+          <span
+            className={`-mt-3.5 flex h-11 w-11 items-center justify-center rounded-full shadow-md transition-transform duration-300 hover:scale-105 ${
+              playActive ? "bg-orange-500" : "bg-orange-400"
+            }`}
+          >
+            <PlayIcon className="h-5 w-5 text-white" />
+          </span>
+          <span className={`text-[10px] font-medium ${playActive ? "text-orange-500" : "text-orange-400"}`}>
+            Играть
+          </span>
+        </Link>
       </div>
     </nav>
   );
