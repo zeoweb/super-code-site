@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { EditProfileForm } from "@/components/EditProfileForm";
 import { AvatarUploadForm } from "@/components/AvatarUploadForm";
+import { CopyButton } from "@/components/CopyButton";
 import { LogoutButton } from "@/components/LogoutButton";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -46,6 +47,17 @@ export default async function ProfilePage() {
         </div>
 
         <p className="mt-6 text-sm text-slate-600">С нами с {registeredAt}</p>
+      </div>
+
+      {/* Реферальный код — виден сразу на главном экране профиля, без
+          перехода на под-страницу; полная статистика — по клику на
+          "Пригласить друзей" ниже. */}
+      <div className="card mt-4 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-xs text-slate-500">Ваш реферальный код</div>
+          <div className="mt-0.5 truncate font-mono text-lg font-bold tracking-wider">{user.referralCode}</div>
+        </div>
+        <CopyButton value={user.referralCode} />
       </div>
 
       {/* Быстрый доступ */}
