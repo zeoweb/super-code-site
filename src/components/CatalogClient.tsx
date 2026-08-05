@@ -55,7 +55,7 @@ export function CatalogClient({
       {user && <BalanceMiniMenu balance={user.balance} />}
 
       {!user && (
-        <Link href="/register" className="mt-4 block overflow-hidden rounded-2xl shadow-sm">
+        <Link href="/register" className="relative mt-4 block overflow-hidden rounded-2xl shadow-sm">
           {/* Картинка баннера сама по себе с чёрным скруглённым краем —
               увеличиваем и обрезаем контейнером, чтобы не было двойного
               скругления (свой + контейнера). */}
@@ -65,8 +65,10 @@ export function CatalogClient({
             alt="Зарегистрируйтесь на SuperDonat"
             className="w-full scale-110 object-cover transition-transform duration-300 hover:scale-[1.15]"
           />
-          {/* Явный призыв к действию — без него непонятно, что баннер кликабелен. */}
-          <div className="flex items-center justify-center gap-1.5 bg-brand-gradient py-3 text-center text-sm font-bold text-white transition-opacity duration-300 hover:opacity-90">
+          {/* Явный призыв к действию — белая плашка-кнопка поверх баннера,
+              с фиксированными цветами (не зависят от темы), чтобы всегда
+              читалась поверх любой части картинки. */}
+          <div className="absolute inset-x-4 bottom-3 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-white px-3 py-2.5 text-center text-xs font-bold text-brand shadow-lg transition-transform duration-300 hover:scale-[1.03] sm:text-sm">
             Зарегистрироваться и получить -5% →
           </div>
         </Link>
