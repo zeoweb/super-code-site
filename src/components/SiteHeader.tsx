@@ -24,9 +24,19 @@ export type SiteHeaderUser = {
 export function SiteHeader({
   user,
   dict,
+  containerClassName = "",
 }: {
   user: SiteHeaderUser | null;
   dict: Dictionary;
+  // Центрирование/max-width/паддинги для <header>, когда его РОДИТЕЛЬ — не
+  // высокий <main> (как на каталоге/about), а отдельная короткая обёртка
+  // (см. (dashboard)/layout.tsx). Диапазон "прилипания" sticky ограничен
+  // высотой ближайшего родителя — если header сидит в тесной обёртке
+  // рядом с {children}-ом как сиблингом, sticky отклеивается сразу после
+  // начала скролла. Передавая эти классы прямо на <header>, header можно
+  // сделать прямым ребёнком высокого общего контейнера без отдельной
+  // обёртки.
+  containerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const navItems = [
@@ -49,15 +59,26 @@ export function SiteHeader({
 
   return (
     <>
-    <header className="pt-4 pb-0 sm:pb-4">
+    <header className={`sticky top-4 z-40 pt-4 pb-0 sm:static sm:top-auto sm:z-auto sm:pb-4 ${containerClassName}`}>
       {/* На мобильных — плавающий тёмный стеклянный бар (статичные цвета,
           не завязанные на ink-/slate- токены темы, чтобы гарантированно
           оставаться тёмным независимо от светлой/тёмной темы сайта):
           фиолетово-чёрный градиент, мягкое фиолетовое свечение (не чёрная
           тень — та выглядела грязным пятном на светлом фоне) для эффекта
           "парения". Отступ до баннера — за счёт mt-4 самого баннера
-          (CatalogClient), здесь margin-bottom не добавляем. На sm+ —
-          сбрасываем обратно к обычной прозрачной шапке. */}
+          (CatalogClient), здесь margin-bottom не добавляем.
+          sticky (не fixed) — держит тот же "парящий" эффект, что и fixed
+          нижний MobileNavBar, но сам естественно резервирует место в
+          потоке, поэтому не нужно вручную докидывать компенсирующий
+          отступ на каждой странице, которая рендерит SiteHeader.
+          ВАЖНО: sticky стоит на самом <header>, а не на внутреннем div —
+          диапазон "прилипания" ограничен высотой БЛИЖАЙШЕГО родителя
+          sticky-элемента. Если повесить sticky на внутренний div, его
+          родителем остаётся этот <header> высотой ~60px — и элемент
+          "отклеивается" почти сразу после начала скролла. Родитель
+          самого <header> — высокий <main> на всю страницу, поэтому
+          прилипание работает на всём протяжении скролла. На sm+ —
+          сбрасываем обратно к обычной прозрачной статичной шапке. */}
       <div className="flex items-center justify-between gap-3 rounded-full border border-white/10 bg-gradient-to-br from-[#33217a]/90 via-[#180f30]/90 to-black/85 px-4 py-2.5 shadow-[0_0_20px_-2px_rgba(139,124,255,0.5),0_14px_28px_-12px_rgba(91,79,224,0.45)] backdrop-blur-xl sm:rounded-none sm:border-0 sm:bg-none sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <Link
           href="/"

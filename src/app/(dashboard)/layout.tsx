@@ -32,13 +32,17 @@ export default async function DashboardGroupLayout({
   ]);
 
   return (
+    // SiteHeader рендерит прямым ребёнком этого div (без отдельной
+    // обёртки) — сам div высокий (min-h-screen) и содержит и хедер, и
+    // {children}, поэтому sticky-хедеру есть где "прилипать" при скролле
+    // по всей странице (см. комментарий про containerClassName в
+    // SiteHeader.tsx).
     <div className="min-h-screen pb-24 sm:pb-0">
-      <div className="mx-auto max-w-5xl px-6">
-        <SiteHeader
-          user={{ name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }}
-          dict={dict}
-        />
-      </div>
+      <SiteHeader
+        user={{ name: user.name, avatarUrl: user.avatarUrl, balance: user.balance.toString(), role: user.role }}
+        dict={dict}
+        containerClassName="mx-auto max-w-5xl px-6"
+      />
       {children}
       <SupportChatModal
         initialNotifications={notifications.map((n) => ({

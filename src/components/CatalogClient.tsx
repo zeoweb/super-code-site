@@ -52,6 +52,12 @@ export function CatalogClient({
     <>
       <SiteHeader user={user} dict={dict} />
 
+      {/* overflow-x-clip живёт здесь, а не на <main> в page.tsx — если бы он
+          сидел выше SiteHeader, sticky-хедер принял бы этот контейнер за
+          ближайший скролл-контейнер вместо viewport и перестал бы прилипать
+          при скролле. Сам clip нужен из-за hover:scale/scale-110 у баннера
+          и карточек игр (иначе едва заметный горизонтальный скролл). */}
+      <div className="overflow-x-clip">
       {user && <BalanceMiniMenu balance={user.balance} />}
 
       {!user && (
@@ -126,6 +132,7 @@ export function CatalogClient({
           ))}
         </div>
       )}
+      </div>
     </>
   );
 }

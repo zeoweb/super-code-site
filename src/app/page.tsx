@@ -22,8 +22,13 @@ export default async function CatalogPage() {
       : Promise.resolve([]),
   ]);
 
+  // overflow-x-clip здесь раньше стоял прямо на <main> — из-за него
+  // sticky-хедер в SiteHeader (рендерится первым внутри CatalogClient)
+  // считал этот элемент ближайшим скролл-контейнером вместо viewport и не
+  // прилипал при скролле. Сдвинули overflow-x-clip внутрь CatalogClient,
+  // на обёртку вокруг контента ПОСЛЕ хедера (см. CatalogClient.tsx).
   return (
-    <main className="relative mx-auto min-h-screen max-w-5xl overflow-x-clip p-6 pb-24 sm:pb-16">
+    <main className="relative mx-auto min-h-screen max-w-5xl p-6 pb-24 sm:pb-16">
       <CatalogClient
         user={
           user
