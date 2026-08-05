@@ -48,7 +48,7 @@ export function MobileNavBar({ nav }: { nav: Dictionary["nav"] }) {
             что и у остальных 4 пунктов, просто крупнее и приподнято. */}
         <Link
           href="/play"
-          className={`-mt-3 flex flex-col items-center gap-0.5 rounded-full px-3 py-2.5 text-[10px] font-bold text-white shadow-md transition-transform duration-300 hover:scale-105 ${
+          className={`-mt-6 flex flex-col items-center gap-0.5 rounded-full px-3 py-2.5 text-[10px] font-bold text-white shadow-md transition-transform duration-300 hover:scale-105 ${
             playActive ? "bg-orange-500" : "bg-orange-400"
           }`}
         >
