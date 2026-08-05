@@ -19,13 +19,43 @@ const GAMES = [
     description: "Сколько кликов в секунду ты сможешь сделать за 5 секунд?",
     emoji: "🖱️",
   },
+  {
+    href: "/play/typing-speed",
+    title: "Typing Speed Test",
+    description: "Напечатай случайный текст как можно быстрее и точнее — WPM и точность.",
+    emoji: "⌨️",
+  },
+  {
+    href: "/play/flick-shot",
+    title: "Flick Shot Trainer",
+    description: "Резко наводись на случайные цели — реакция и точность за 6 раундов.",
+    emoji: "🏹",
+  },
+  {
+    href: "/play/tracking-test",
+    title: "Tracking Test",
+    description: "Удерживай курсор на движущейся цели — сколько времени продержишься.",
+    emoji: "🌀",
+  },
+  {
+    href: "/play/apm-test",
+    title: "APM Test",
+    description: "Клики и нажатия клавиш за 60 секунд — узнай свой APM.",
+    emoji: "🔥",
+  },
+  {
+    href: "/play/grid-shot",
+    title: "Grid Shot",
+    description: "Кликай по подсвеченным ячейкам сетки как можно быстрее.",
+    emoji: "🔲",
+  },
 ];
 
 export default function PlayPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">Мини-игры</h1>
-      <p className="mt-1 text-sm text-gray-500">Проверь реакцию и скорость клика.</p>
+      <p className="mt-1 text-sm text-gray-500">Проверь реакцию, скорость клика и печати.</p>
 
       <div className="mt-6 space-y-3">
         {GAMES.map((g) => (
