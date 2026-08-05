@@ -58,7 +58,10 @@ model User {
   role         Role      @default(student)
   balance      Decimal   @default(0) @db.Decimal(10, 2)
   avatarUrl    String?   @map("avatar_url")
-  // Кто пригласил этого пользователя (реферальная программа) — необязательно.
+  // Реферальная программа: свой код (генерируется при регистрации, см.
+  // actions/auth.ts) для ссылки-приглашения, и кто пригласил этого
+  // пользователя — необязательно, только если пришёл по чужой ссылке.
+  referralCode String    @unique @map("referral_code")
   referredById String?   @map("referred_by_id")
   createdAt    DateTime  @default(now()) @map("created_at")
   lastLoginAt  DateTime? @map("last_login_at")

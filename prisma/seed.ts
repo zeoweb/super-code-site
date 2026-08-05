@@ -26,6 +26,7 @@ async function main() {
       phone: "+992900000000",
       passwordHash: adminPass,
       role: Role.admin,
+      referralCode: "ADMIN001",
     },
   });
 
@@ -38,6 +39,7 @@ async function main() {
       phone: "+992900000001",
       passwordHash: studentPass,
       role: Role.student,
+      referralCode: "DEMO0001",
     },
   });
 

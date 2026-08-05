@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/db";
 import {
   createSession,
@@ -14,8 +15,20 @@ import {
   looksLikeEmail,
   normalizePhone,
 } from "@/lib/validation";
+import { generateReferralCode, REF_COOKIE } from "@/lib/referral";
 
 export type ActionState = { error?: string } | undefined;
+
+// Ретраи почти никогда не понадобятся (7 символов из 32-символьного
+// алфавита — 32^7 комбинаций), но на всякий случай проверяем уникальность.
+async function uniqueReferralCode(): Promise<string> {
+  for (let i = 0; i < 10; i++) {
+    const code = generateReferralCode();
+    const exists = await prisma.user.findUnique({ where: { referralCode: code }, select: { id: true } });
+    if (!exists) return code;
+  }
+  throw new Error("Не удалось сгенерировать уникальный реферальный код");
+}
 
 // --- Регистрация ---
 export async function registerAction(
@@ -44,8 +57,13 @@ export async function registerAction(
     return { error: "Такой телефон уже зарегистрирован" };
   }
 
-  const refId = String(formData.get("ref") ?? "").trim() || null;
-  const referrer = refId ? await prisma.user.findUnique({ where: { id: refId }, select: { id: true } }) : null;
+  // Код приглашения: явное поле формы (прямая ссылка вида /register?ref=)
+  // или cookie, оставленный middleware при переходе по /?ref= ранее —
+  // работает, даже если пользователь полистал сайт перед регистрацией.
+  const refCode = String(formData.get("ref") ?? "").trim() || cookies().get(REF_COOKIE)?.value || "";
+  const referrer = refCode
+    ? await prisma.user.findUnique({ where: { referralCode: refCode }, select: { id: true } })
+    : null;
 
   const user = await prisma.user.create({
     data: {
@@ -53,11 +71,13 @@ export async function registerAction(
       email,
       phone,
       passwordHash: await hashPassword(password),
+      referralCode: await uniqueReferralCode(),
       referredById: referrer?.id ?? null,
     },
   });
 
   await createSession({ sub: user.id, role: user.role, name: user.name });
+  cookies().delete(REF_COOKIE);
 
   const returnTo = String(formData.get("returnTo") ?? "");
   redirect(returnTo && returnTo.startsWith("/") ? returnTo : "/");
