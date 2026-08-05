@@ -167,7 +167,10 @@ export default async function HistoryPage({
             return (
               <div key={t.id} className="card flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="font-medium">{TXN_REASON_LABEL[t.reason]}</div>
+                  <div className="font-medium">
+                    {TXN_REASON_LABEL[t.reason]}
+                    {t.note ? ` · ${t.note}` : ""}
+                  </div>
                   <div className="text-xs text-slate-600">{t.createdAt.toLocaleDateString("ru-RU")}</div>
                 </div>
                 <span className={"shrink-0 font-bold " + (positive ? "text-emerald-600" : "text-red-600")}>

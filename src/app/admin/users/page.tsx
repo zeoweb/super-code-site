@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
+import { adjustUserBalance } from "@/app/actions/admin";
 
 export default async function AdminUsersPage({
   searchParams,
@@ -65,7 +66,10 @@ export default async function AdminUsersPage({
                   <div>{u.email ?? "—"}</div>
                   <div>{u.phone ?? "—"}</div>
                 </td>
-                <td className="py-3 pr-4">{u.balance.toString()} TJS</td>
+                <td className="py-3 pr-4">
+                  <div>{u.balance.toString()} TJS</div>
+                  <BalanceAdjustForm userId={u.id} />
+                </td>
                 <td className="py-3 pr-4">{u._count.orders}</td>
                 <td className="py-3 pr-4 text-slate-500">
                   {u.createdAt.toLocaleDateString("ru-RU")}
@@ -95,9 +99,42 @@ export default async function AdminUsersPage({
               <span className="badge border-slate-200">{u._count.orders} заказов</span>
               <span className="badge border-slate-200">{u.createdAt.toLocaleDateString("ru-RU")}</span>
             </div>
+            <div className="mt-3 border-t border-slate-100 pt-3">
+              <BalanceAdjustForm userId={u.id} />
+            </div>
           </div>
         ))}
       </div>
     </div>
+  );
+}
+
+// Ручная корректировка баланса — проводится через BalanceTx (reason: admin),
+// а не прямым изменением поля balance, чтобы попадать в общий журнал
+// (см. actions/admin.ts: adjustUserBalance). Сумма может быть положительной
+// (начисление) или отрицательной (списание).
+function BalanceAdjustForm({ userId }: { userId: string }) {
+  return (
+    <details className="mt-1.5">
+      <summary className="inline-block cursor-pointer list-none text-xs font-medium text-brand-light hover:underline">
+        Скорректировать баланс
+      </summary>
+      <form action={adjustUserBalance} className="mt-2 max-w-xs space-y-2">
+        <input type="hidden" name="userId" value={userId} />
+        <input
+          name="amount"
+          inputMode="decimal"
+          placeholder="Сумма, напр. +50 или -20"
+          className="input py-1.5 text-sm"
+          required
+        />
+        <input
+          name="note"
+          placeholder="Причина (необязательно)"
+          className="input py-1.5 text-sm"
+        />
+        <button className="btn-primary px-3 py-1.5 text-xs">Применить</button>
+      </form>
+    </details>
   );
 }

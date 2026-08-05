@@ -180,6 +180,7 @@ model BalanceTx {
   amount    Decimal         @db.Decimal(10, 2)
   reason    BalanceTxReason
   refId     String?         @map("ref_id") // id соответствующего TopUp/Order
+  note      String? // причина ручной корректировки админом и т.п. — для истории
   createdAt DateTime        @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

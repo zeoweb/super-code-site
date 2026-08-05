@@ -104,3 +104,23 @@ export async function deleteExpense(formData: FormData) {
   await prisma.expense.delete({ where: { id } });
   revalidatePath("/admin/finance");
 }
+
+// --- Пользователи: ручная корректировка баланса ---
+export async function adjustUserBalance(formData: FormData) {
+  await requireAdmin();
+  const userId = String(formData.get("userId") ?? "");
+  const amount = Number(String(formData.get("amount") ?? "").trim().replace(",", "."));
+  const note = String(formData.get("note") ?? "").trim() || null;
+  if (!userId || !Number.isFinite(amount) || amount === 0) return;
+
+  // Через BalanceTx (reason: admin), а не прямым update balance — так
+  // корректировка попадает в общий журнал и видна пользователю в /history.
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({ where: { id: userId }, data: { balance: { increment: amount } } });
+    await tx.balanceTx.create({ data: { userId, amount, reason: "admin", note } });
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/history");
+  revalidatePath("/profile");
+}
