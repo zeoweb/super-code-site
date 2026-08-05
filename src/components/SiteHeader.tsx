@@ -49,14 +49,16 @@ export function SiteHeader({
 
   return (
     <>
-    <header className="py-4">
+    <header className="pt-4 pb-0 sm:pb-4">
       {/* На мобильных — плавающий тёмный стеклянный бар (статичные цвета,
           не завязанные на ink-/slate- токены темы, чтобы гарантированно
           оставаться тёмным независимо от светлой/тёмной темы сайта):
-          фиолетово-чёрный градиент, свечение по краю + мягкая тень снизу
-          для эффекта "парения", отступ mb-4 перед следующим блоком. На
-          sm+ — сбрасываем обратно к обычной прозрачной шапке. */}
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-full border border-white/10 bg-gradient-to-br from-[#33217a]/90 via-[#180f30]/90 to-black/85 px-4 py-2.5 shadow-[0_0_22px_-4px_rgba(139,124,255,0.55),0_18px_36px_-14px_rgba(0,0,0,0.65)] backdrop-blur-xl sm:mb-0 sm:rounded-none sm:border-0 sm:bg-none sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
+          фиолетово-чёрный градиент, мягкое фиолетовое свечение (не чёрная
+          тень — та выглядела грязным пятном на светлом фоне) для эффекта
+          "парения". Отступ до баннера — за счёт mt-4 самого баннера
+          (CatalogClient), здесь margin-bottom не добавляем. На sm+ —
+          сбрасываем обратно к обычной прозрачной шапке. */}
+      <div className="flex items-center justify-between gap-3 rounded-full border border-white/10 bg-gradient-to-br from-[#33217a]/90 via-[#180f30]/90 to-black/85 px-4 py-2.5 shadow-[0_0_20px_-2px_rgba(139,124,255,0.5),0_14px_28px_-12px_rgba(91,79,224,0.45)] backdrop-blur-xl sm:rounded-none sm:border-0 sm:bg-none sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
         <Link
           href="/"
           className="flex shrink-0 flex-col text-lg font-black leading-none tracking-tight text-white sm:flex-row sm:items-center sm:gap-2 sm:text-slate-900"
