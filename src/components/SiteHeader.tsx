@@ -50,10 +50,24 @@ export function SiteHeader({
   return (
     <>
     <header className="py-4">
-      <div className="flex items-center justify-between gap-3">
-        <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-black tracking-tight">
-          <DiamondIcon id="diamond-grad-header" className="h-7 w-7" />
-          SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>
+      {/* На мобильных — плавающий тёмный стеклянный бар (статичные цвета,
+          не завязанные на ink-/slate- токены темы, чтобы гарантированно
+          оставаться тёмным независимо от светлой/тёмной темы сайта):
+          фиолетово-чёрный градиент, свечение по краю + мягкая тень снизу
+          для эффекта "парения", отступ mb-4 перед следующим блоком. На
+          sm+ — сбрасываем обратно к обычной прозрачной шапке. */}
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-full border border-white/10 bg-gradient-to-br from-[#33217a]/90 via-[#180f30]/90 to-black/85 px-4 py-2.5 shadow-[0_0_22px_-4px_rgba(139,124,255,0.55),0_18px_36px_-14px_rgba(0,0,0,0.65)] backdrop-blur-xl sm:mb-0 sm:rounded-none sm:border-0 sm:bg-none sm:px-0 sm:py-0 sm:shadow-none sm:backdrop-blur-none">
+        <Link
+          href="/"
+          className="flex shrink-0 flex-col text-lg font-black leading-none tracking-tight text-white sm:flex-row sm:items-center sm:gap-2 sm:text-slate-900"
+        >
+          <span className="flex items-center gap-2">
+            <DiamondIcon id="diamond-grad-header" className="h-7 w-7" />
+            SUPER<span className="bg-brand-gradient bg-clip-text text-transparent">DONAT</span>
+          </span>
+          <span className="mt-1 text-[10px] font-medium normal-case tracking-normal text-slate-400 sm:hidden">
+            Пополнение игровой валюты
+          </span>
         </Link>
 
         {user ? (
@@ -91,7 +105,12 @@ export function SiteHeader({
             )}
           </div>
         ) : (
-          <Link href="/login" className="btn-primary shrink-0 px-4 py-2 text-sm">Войти</Link>
+          <Link
+            href="/login"
+            className="btn-primary shrink-0 rounded-full px-5 py-2 text-sm shadow-[0_4px_18px_-2px_rgba(139,124,255,0.65)] sm:rounded-xl sm:px-4 sm:shadow-md"
+          >
+            Войти
+          </Link>
         )}
       </div>
 
