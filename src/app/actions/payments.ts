@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { saveUploadedFile } from "@/lib/storage";
-import { TOPUP_MIN_AMOUNT, TOPUP_MAX_AMOUNT } from "@/lib/topup";
+import { TOPUP_MIN_AMOUNT, TOPUP_MAX_AMOUNT, TOPUP_MAX_PENDING, TOPUP_PENDING_LIMIT_MESSAGE } from "@/lib/topup";
 
 // Пользователь отправляет заявку на пополнение баланса: сумма + способ
 // оплаты + скриншот чека. Форма — отдельная страница /topup/pay, не
@@ -27,6 +27,14 @@ export async function submitTopUp(formData: FormData): Promise<void> {
         `Сумма пополнения — от ${TOPUP_MIN_AMOUNT} до ${TOPUP_MAX_AMOUNT} сомони`,
       )}`,
     );
+  }
+
+  // Финальная проверка лимита pending-заявок — /topup (шаг 1) уже блокирует
+  // форму при достижении лимита, но это единственная проверка, которую
+  // нельзя обойти прямым запросом к этому экшену.
+  const pendingCount = await prisma.topUp.count({ where: { userId: user.id, status: "pending" } });
+  if (pendingCount >= TOPUP_MAX_PENDING) {
+    redirect(`/topup?error=${encodeURIComponent(TOPUP_PENDING_LIMIT_MESSAGE)}`);
   }
 
   const file = formData.get("receipt");
