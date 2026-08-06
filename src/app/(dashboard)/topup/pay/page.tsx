@@ -44,7 +44,7 @@ export default async function TopUpPayPage({
         {method && (
           <div className="space-y-3 border-b border-slate-200 bg-brand-gradient/10 p-5">
             <div className="flex items-center justify-between gap-2">
-              <span className="badge border-brand/40 bg-ink-900/60 font-semibold text-white">
+              <span className="badge border-brand/40 bg-brand/10 font-semibold text-brand-light">
                 {method.bankName}
               </span>
               <PaymentCountdown />

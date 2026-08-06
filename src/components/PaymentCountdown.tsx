@@ -24,7 +24,7 @@ export function PaymentCountdown() {
   const seconds = totalSeconds % 60;
 
   return (
-    <span className="badge shrink-0 border-brand/40 bg-ink-900/60 font-semibold tabular-nums text-white">
+    <span className="badge shrink-0 border-brand/40 bg-brand/10 font-semibold tabular-nums text-brand-light">
       ⏱ {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
     </span>
   );
