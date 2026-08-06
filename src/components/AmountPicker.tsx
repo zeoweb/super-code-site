@@ -3,14 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckoutStepIndicator } from "@/components/CheckoutStepIndicator";
+import { TOPUP_MIN_AMOUNT, TOPUP_MAX_AMOUNT } from "@/lib/topup";
 
 // Шаг 1 из 3 флоу пополнения: выбор суммы (быстрые варианты или своя).
 export function AmountPicker({ quickAmounts }: { quickAmounts: number[] }) {
   const [amount, setAmount] = useState(quickAmounts[3] ?? quickAmounts[0]);
   const router = useRouter();
 
+  const touched = amount !== null && amount !== undefined;
+  const belowMin = touched && amount > 0 && amount < TOPUP_MIN_AMOUNT;
+  const aboveMax = touched && amount > TOPUP_MAX_AMOUNT;
+  const isValid = touched && amount >= TOPUP_MIN_AMOUNT && amount <= TOPUP_MAX_AMOUNT;
+
   function onContinue() {
-    if (!amount || amount < 1) return;
+    if (!isValid) return;
     router.push(`/topup/method?amount=${amount}`);
   }
 
@@ -35,10 +41,16 @@ export function AmountPicker({ quickAmounts }: { quickAmounts: number[] }) {
         ))}
       </div>
 
-      <div className="card mt-3 flex items-center justify-between gap-3">
+      <div
+        className={
+          "card mt-3 flex items-center justify-between gap-3 " +
+          (belowMin || aboveMax ? "border-red-500/50" : "")
+        }
+      >
         <input
           type="number"
-          min={1}
+          min={TOPUP_MIN_AMOUNT}
+          max={TOPUP_MAX_AMOUNT}
           value={amount || ""}
           onChange={(e) => setAmount(Number(e.target.value))}
           className="w-full bg-transparent text-xl font-bold outline-none"
@@ -47,10 +59,18 @@ export function AmountPicker({ quickAmounts }: { quickAmounts: number[] }) {
         <span className="shrink-0 text-sm text-slate-600">сомони</span>
       </div>
 
+      {(belowMin || aboveMax) && (
+        <p className="mt-2 text-sm text-red-600">
+          {belowMin
+            ? `Минимальная сумма пополнения — ${TOPUP_MIN_AMOUNT} сомони`
+            : `Максимальная сумма пополнения — ${TOPUP_MAX_AMOUNT} сомони`}
+        </p>
+      )}
+
       <button
         type="button"
         onClick={onContinue}
-        disabled={!amount || amount < 1}
+        disabled={!isValid}
         className="btn-primary mt-6 w-full disabled:opacity-40"
       >
         Продолжить →

@@ -8,6 +8,7 @@ import { CheckoutStepIndicator } from "@/components/CheckoutStepIndicator";
 import { CopyButton } from "@/components/CopyButton";
 import { ReceiptFileInput } from "@/components/ReceiptFileInput";
 import { PaymentCountdown } from "@/components/PaymentCountdown";
+import { TOPUP_MIN_AMOUNT, TOPUP_MAX_AMOUNT } from "@/lib/topup";
 
 // Шаг 3 из 3: реквизиты выбранного банка + сумма + чек.
 export default async function TopUpPayPage({
@@ -19,7 +20,7 @@ export default async function TopUpPayPage({
   if (!user) redirect("/login?returnTo=/topup");
 
   const amount = Number(searchParams.amount);
-  if (!Number.isFinite(amount) || amount < 1) redirect("/topup");
+  if (!Number.isFinite(amount) || amount < TOPUP_MIN_AMOUNT || amount > TOPUP_MAX_AMOUNT) redirect("/topup");
 
   const method = searchParams.method
     ? await prisma.paymentMethod.findUnique({

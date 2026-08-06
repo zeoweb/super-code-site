@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { CheckoutStepIndicator } from "@/components/CheckoutStepIndicator";
+import { TOPUP_MIN_AMOUNT, TOPUP_MAX_AMOUNT } from "@/lib/topup";
 
 // Шаг 2 из 3: выбор способа оплаты. Отдельная страница.
 export default async function TopUpMethodPage({
@@ -14,7 +15,7 @@ export default async function TopUpMethodPage({
   if (!user) redirect("/login?returnTo=/topup");
 
   const amount = Number(searchParams.amount);
-  if (!Number.isFinite(amount) || amount < 1) redirect("/topup");
+  if (!Number.isFinite(amount) || amount < TOPUP_MIN_AMOUNT || amount > TOPUP_MAX_AMOUNT) redirect("/topup");
 
   const methods = await prisma.paymentMethod.findMany({
     where: { isActive: true },

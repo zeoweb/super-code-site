@@ -5,9 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { saveUploadedFile } from "@/lib/storage";
-
-const MIN_AMOUNT = 1;
-const MAX_AMOUNT = 100000;
+import { TOPUP_MIN_AMOUNT, TOPUP_MAX_AMOUNT } from "@/lib/topup";
 
 // Пользователь отправляет заявку на пополнение баланса: сумма + способ
 // оплаты + скриншот чека. Форма — отдельная страница /topup/pay, не
@@ -20,8 +18,15 @@ export async function submitTopUp(formData: FormData): Promise<void> {
   const user = await getCurrentUser();
   if (!user) redirect(`/login?returnTo=${encodeURIComponent(back)}`);
 
-  if (!Number.isFinite(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
-    redirect("/topup");
+  if (!Number.isFinite(amount) || amount < TOPUP_MIN_AMOUNT || amount > TOPUP_MAX_AMOUNT) {
+    // Не на /topup/pay: у этой страницы свой guard на диапазон суммы,
+    // который тут же увёл бы обратно, не дав показать ошибку. Возвращаем
+    // на шаг 1, где можно ввести сумму заново.
+    redirect(
+      `/topup?error=${encodeURIComponent(
+        `Сумма пополнения — от ${TOPUP_MIN_AMOUNT} до ${TOPUP_MAX_AMOUNT} сомони`,
+      )}`,
+    );
   }
 
   const file = formData.get("receipt");
