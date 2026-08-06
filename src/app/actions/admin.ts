@@ -154,3 +154,19 @@ export async function toggleUserBan(formData: FormData) {
   await prisma.user.update({ where: { id: userId }, data: { isBanned: !user.isBanned } });
   revalidatePath("/admin/users");
 }
+
+// --- Массовая рассылка через тот же Notification/колокольчик, что уже
+// используется для системных уведомлений ("Заказ выполнен" и т.п.) —
+// никакой отдельной Broadcast-модели, просто одна запись на пользователя.
+export async function broadcastNotification(formData: FormData) {
+  await requireAdmin();
+  const message = String(formData.get("message") ?? "").trim();
+  if (!message) return;
+
+  const users = await prisma.user.findMany({ select: { id: true } });
+  await prisma.notification.createMany({
+    data: users.map((u) => ({ userId: u.id, message })),
+  });
+
+  revalidatePath("/admin/notify");
+}
