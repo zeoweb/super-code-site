@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { createReviewAdmin, deleteReview } from "@/app/actions/reviews";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { StarRatingDisplay } from "@/components/StarRating";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function AdminReviewsPage() {
   const reviews = await prisma.review.findMany({ orderBy: { createdAt: "desc" } });
@@ -29,7 +30,9 @@ export default async function AdminReviewsPage() {
           <label className="label">Текст отзыва</label>
           <textarea name="text" rows={3} className="input resize-none" required />
         </div>
-        <button className="btn-primary">Добавить</button>
+        <SubmitButton className="btn-primary" pendingText="Добавляем…">
+          Добавить
+        </SubmitButton>
       </form>
 
       <h2 className="mt-8 text-lg font-bold">Все отзывы ({reviews.length})</h2>

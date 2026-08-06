@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { createPromoCode, togglePromoCode, deletePromoCode } from "@/app/actions/promocodes";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function AdminPromoCodesPage() {
   const promoCodes = await prisma.promoCode.findMany({ orderBy: { createdAt: "desc" } });
@@ -41,7 +42,9 @@ export default async function AdminPromoCodesPage() {
         <p className="text-xs text-slate-500">
           Каждый пользователь может применить код только один раз, независимо от общего лимита использований.
         </p>
-        <button className="btn-primary">Создать</button>
+        <SubmitButton className="btn-primary" pendingText="Создаём…">
+          Создать
+        </SubmitButton>
       </form>
 
       <h2 className="mt-8 text-lg font-bold">Все промокоды</h2>
@@ -66,9 +69,9 @@ export default async function AdminPromoCodesPage() {
               <div className="flex shrink-0 items-center gap-2">
                 <form action={togglePromoCode}>
                   <input type="hidden" name="id" value={p.id} />
-                  <button className="btn-ghost px-3 py-1.5 text-xs">
+                  <SubmitButton className="btn-ghost px-3 py-1.5 text-xs" pendingText="…">
                     {p.isActive ? "Выключить" : "Включить"}
-                  </button>
+                  </SubmitButton>
                 </form>
                 <ConfirmDeleteButton action={deletePromoCode} id={p.id} confirmText={`Удалить промокод «${p.code}»?`} />
               </div>

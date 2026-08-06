@@ -63,6 +63,9 @@ model User {
   // пользователя — необязательно, только если пришёл по чужой ссылке.
   referralCode String    @unique @map("referral_code")
   referredById String?   @map("referred_by_id")
+  // Блокировка за нарушение правил — банит логин и любые новые деньги-
+  // действия (заказы/пополнения), см. getCurrentUser() и loginAction.
+  isBanned     Boolean   @default(false) @map("is_banned")
   createdAt    DateTime  @default(now()) @map("created_at")
   lastLoginAt  DateTime? @map("last_login_at")
 
@@ -181,6 +184,11 @@ model BalanceTx {
   reason    BalanceTxReason
   refId     String?         @map("ref_id") // id соответствующего TopUp/Order
   note      String? // причина ручной корректировки админом и т.п. — для истории
+  // Ключ идемпотентности для операций без своего pending-статуса для
+  // защиты (в отличие от Order/TopUp) — сейчас только adjustUserBalance.
+  // Уникальный индекс не даёт повторный сабмит той же формы применить
+  // корректировку дважды при дабл-клике/лаге.
+  idempotencyKey String?    @unique @map("idempotency_key")
   createdAt DateTime        @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

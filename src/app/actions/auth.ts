@@ -108,6 +108,10 @@ export async function loginAction(
     return { error: "Неверный логин или пароль" };
   }
 
+  if (user.isBanned) {
+    return { error: "Аккаунт заблокирован за нарушение правил. Обратитесь в поддержку." };
+  }
+
   await prisma.user.update({
     where: { id: user.id },
     data: { lastLoginAt: new Date() },

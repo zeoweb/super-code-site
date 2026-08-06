@@ -75,7 +75,14 @@ export async function getSession(): Promise<SessionPayload | null> {
 export async function getCurrentUser() {
   const session = await getSession();
   if (!session) return null;
-  return prisma.user.findUnique({ where: { id: session.sub } });
+  const user = await prisma.user.findUnique({ where: { id: session.sub } });
+  // Забаненный — как будто не залогинен: разом блокирует все защищённые
+  // страницы и деньги-действия (заказы/пополнения), без точечных проверок
+  // isBanned в каждом отдельном action. JWT у забаненного мог остаться
+  // валидным (бан не переиздаёт сессию) — реальная проверка всегда здесь,
+  // на чтении из БД.
+  if (!user || user.isBanned) return null;
+  return user;
 }
 
 export const SESSION_COOKIE = COOKIE_NAME;

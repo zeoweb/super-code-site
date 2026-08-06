@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { approveTopUp, rejectTopUp } from "@/app/actions/topups";
 import { RejectButton } from "@/components/admin/RejectButton";
+import { SubmitButton } from "@/components/SubmitButton";
 import type { PaymentStatus } from "@prisma/client";
 
 const TABS: { key: PaymentStatus; label: string }[] = [
@@ -91,7 +92,9 @@ export default async function AdminTopUpsPage({
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   <form action={approveTopUp}>
                     <input type="hidden" name="id" value={t.id} />
-                    <button className="btn-primary px-4 py-2 text-sm">Одобрить</button>
+                    <SubmitButton className="btn-primary px-4 py-2 text-sm" pendingText="Одобряем…">
+                      Одобрить
+                    </SubmitButton>
                   </form>
                   <RejectButton id={t.id} action={rejectTopUp} />
                 </div>

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { savePaymentMethod, togglePaymentMethod } from "@/app/actions/admin";
+import { SubmitButton } from "@/components/SubmitButton";
 
 // Реквизиты для приёма оплаты (банки).
 export default async function AdminMethodsPage() {
@@ -58,14 +59,16 @@ export default async function AdminMethodsPage() {
                 <label className="flex items-center gap-2 text-sm">
                   <input type="checkbox" name="isActive" defaultChecked={m.isActive} /> Активен
                 </label>
-                <button className="btn-primary px-4 py-2 text-sm">Сохранить</button>
+                <SubmitButton className="btn-primary px-4 py-2 text-sm" pendingText="Сохраняем…">
+                  Сохранить
+                </SubmitButton>
               </form>
 
               <form action={togglePaymentMethod} className="border-t border-slate-200 pt-3">
                 <input type="hidden" name="id" value={m.id} />
-                <button className="btn-ghost px-3 py-2 text-sm">
+                <SubmitButton className="btn-ghost px-3 py-2 text-sm" pendingText="…">
                   {m.isActive ? "Деактивировать" : "Активировать"}
-                </button>
+                </SubmitButton>
               </form>
             </div>
           </details>
@@ -97,7 +100,9 @@ export default async function AdminMethodsPage() {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="isActive" defaultChecked /> Активен
         </label>
-        <button className="btn-primary">Сохранить</button>
+        <SubmitButton className="btn-primary" pendingText="Сохраняем…">
+          Сохранить
+        </SubmitButton>
       </form>
     </div>
   );

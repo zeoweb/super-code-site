@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin-guard";
 import { saveUploadedLogo } from "@/lib/storage";
-import type { TaskStatus } from "@prisma/client";
+import { Prisma, type TaskStatus } from "@prisma/client";
 
 // ============================================================
 //  Экшены админки. Каждый начинается с requireAdmin().
@@ -111,16 +111,46 @@ export async function adjustUserBalance(formData: FormData) {
   const userId = String(formData.get("userId") ?? "");
   const amount = Number(String(formData.get("amount") ?? "").trim().replace(",", "."));
   const note = String(formData.get("note") ?? "").trim() || null;
+  // Генерируется на сервере при рендере формы (см. BalanceAdjustForm) —
+  // один и тот же ключ у всех повторных сабмитов ОДНОЙ отрисовки формы
+  // (дабл-клик, лаг сети и т.п.), новый — только после revalidatePath.
+  const idempotencyKey = String(formData.get("idempotencyKey") ?? "").trim() || null;
   if (!userId || !Number.isFinite(amount) || amount === 0) return;
 
-  // Через BalanceTx (reason: admin), а не прямым update balance — так
-  // корректировка попадает в общий журнал и видна пользователю в /history.
-  await prisma.$transaction(async (tx) => {
-    await tx.user.update({ where: { id: userId }, data: { balance: { increment: amount } } });
-    await tx.balanceTx.create({ data: { userId, amount, reason: "admin", note } });
-  });
+  try {
+    // Через BalanceTx (reason: admin), а не прямым update balance — так
+    // корректировка попадает в общий журнал и видна пользователю в /history.
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({ where: { id: userId }, data: { balance: { increment: amount } } });
+      await tx.balanceTx.create({ data: { userId, amount, reason: "admin", note, idempotencyKey } });
+    });
+  } catch (e) {
+    // Повторный сабмит с тем же idempotencyKey — уникальный индекс роняет
+    // create, что откатывает ВСЮ транзакцию (включая increment баланса),
+    // так что повтор безопасно не делает ничего вместо повторного начисления.
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      return;
+    }
+    throw e;
+  }
 
   revalidatePath("/admin/users");
   revalidatePath("/history");
   revalidatePath("/profile");
+}
+
+// --- Пользователи: блокировка/разблокировка ---
+export async function toggleUserBan(formData: FormData) {
+  await requireAdmin();
+  const userId = String(formData.get("userId") ?? "");
+  if (!userId) return;
+
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { isBanned: true, role: true } });
+  if (!user) return;
+  // Админов через этот тумблер не блокируем — если понадобится, сначала
+  // сменить роль на student отдельно, это осознанное защитное трение.
+  if (user.role === "admin") return;
+
+  await prisma.user.update({ where: { id: userId }, data: { isBanned: !user.isBanned } });
+  revalidatePath("/admin/users");
 }

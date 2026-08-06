@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { createExpense, deleteExpense } from "@/app/actions/admin";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { SubmitButton } from "@/components/SubmitButton";
 
 // Финансовая сводка: выручка считается напрямую из одобренных платежей,
 // расходы — отдельная простая таблица, которую ведёт админ вручную.
@@ -54,7 +55,9 @@ export default async function AdminFinancePage() {
           <label className="label">Категория (опционально)</label>
           <input name="category" className="input" placeholder="Напр. Маркетинг" />
         </div>
-        <button className="btn-primary">Добавить расход</button>
+        <SubmitButton className="btn-primary" pendingText="Добавляем…">
+          Добавить расход
+        </SubmitButton>
       </form>
 
       {/* Список расходов */}

@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { logoutAction } from "@/app/actions/auth";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { AdminMobileNav } from "@/components/AdminMobileNav";
+import { SubmitButton } from "@/components/SubmitButton";
 
 // Общий каркас админки + повторная проверка прав на сервере.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -25,7 +26,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="flex shrink-0 items-center gap-1 text-sm sm:gap-2">
             <Link href="/" className="rounded-lg px-2 py-2 transition-colors duration-300 hover:bg-slate-100 sm:px-3">На сайт</Link>
             <form action={logoutAction}>
-              <button className="rounded-lg px-2 py-2 text-red-600 transition-colors duration-300 hover:bg-slate-100 sm:px-3">Выйти</button>
+              <SubmitButton
+                className="rounded-lg px-2 py-2 text-red-600 transition-colors duration-300 hover:bg-slate-100 sm:px-3"
+                pendingText="…"
+              >
+                Выйти
+              </SubmitButton>
             </form>
           </div>
         </div>

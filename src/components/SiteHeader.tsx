@@ -7,6 +7,7 @@ import { DiamondIcon } from "@/components/DiamondIcon";
 import { Avatar } from "@/components/Avatar";
 import { MobileNavBar } from "@/components/MobileNavBar";
 import { logoutAction } from "@/app/actions/auth";
+import { SubmitButton } from "@/components/SubmitButton";
 import type { Role } from "@prisma/client";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
@@ -120,9 +121,12 @@ export function SiteHeader({
                   </MenuLink>
                 )}
                 <form action={logoutAction} className="border-t border-slate-100">
-                  <button className="w-full px-4 py-2 text-left text-sm text-red-600 transition-colors duration-300 hover:bg-slate-50">
+                  <SubmitButton
+                    className="w-full px-4 py-2 text-left text-sm text-red-600 transition-colors duration-300 hover:bg-slate-50"
+                    pendingText="Выходим…"
+                  >
                     Выйти
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
             )}

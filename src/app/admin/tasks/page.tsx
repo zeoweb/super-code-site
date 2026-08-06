@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { createTask, setTaskStatus, deleteTask } from "@/app/actions/admin";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { SubmitButton } from "@/components/SubmitButton";
 import type { TaskStatus } from "@prisma/client";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
@@ -40,7 +41,9 @@ export default async function AdminTasksPage() {
           <label className="label">Описание (опционально)</label>
           <textarea name="description" rows={2} className="input" placeholder="Детали задачи" />
         </div>
-        <button className="btn-primary">Добавить</button>
+        <SubmitButton className="btn-primary" pendingText="Добавляем…">
+          Добавить
+        </SubmitButton>
       </form>
 
       {/* Список задач */}
@@ -63,7 +66,9 @@ export default async function AdminTasksPage() {
                 <form key={s} action={setTaskStatus}>
                   <input type="hidden" name="id" value={t.id} />
                   <input type="hidden" name="status" value={s} />
-                  <button className="btn-ghost px-3 py-1.5 text-xs">→ {STATUS_LABEL[s]}</button>
+                  <SubmitButton className="btn-ghost px-3 py-1.5 text-xs" pendingText="…">
+                    → {STATUS_LABEL[s]}
+                  </SubmitButton>
                 </form>
               ))}
               <ConfirmDeleteButton

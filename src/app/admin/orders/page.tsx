@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { completeOrder, rejectOrder } from "@/app/actions/admin-orders";
 import { RejectButton } from "@/components/admin/RejectButton";
+import { SubmitButton } from "@/components/SubmitButton";
 import type { OrderStatus } from "@prisma/client";
 
 const TABS: { key: OrderStatus; label: string }[] = [
@@ -75,7 +76,9 @@ export default async function AdminOrdersPage({
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   <form action={completeOrder}>
                     <input type="hidden" name="id" value={o.id} />
-                    <button className="btn-primary px-4 py-2 text-sm">Выдано ✅</button>
+                    <SubmitButton className="btn-primary px-4 py-2 text-sm" pendingText="Выдаём…">
+                      Выдано ✅
+                    </SubmitButton>
                   </form>
                   <RejectButton id={o.id} action={rejectOrder} />
                 </div>

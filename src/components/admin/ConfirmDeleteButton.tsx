@@ -1,5 +1,7 @@
 "use client";
 
+import { SubmitButton } from "@/components/SubmitButton";
+
 // Кнопка удаления с подтверждением — для необратимых действий.
 export function ConfirmDeleteButton({
   action,
@@ -20,7 +22,9 @@ export function ConfirmDeleteButton({
       }}
     >
       <input type="hidden" name="id" value={id} />
-      <button className="btn-ghost px-3 py-2 text-xs text-red-600">{label}</button>
+      <SubmitButton className="btn-ghost px-3 py-2 text-xs text-red-600" pendingText="Удаляем…">
+        {label}
+      </SubmitButton>
     </form>
   );
 }

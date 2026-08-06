@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { createGame, updateGame, deleteGame, createPackage, updatePackage, deletePackage } from "@/app/actions/games";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { SubmitButton } from "@/components/SubmitButton";
 
 const KIND_OPTIONS: { value: string; label: string }[] = [
   { value: "currency", label: "Валюта" },
@@ -76,7 +77,9 @@ export default async function AdminGamesPage() {
                 <label className="flex items-center gap-2 text-sm">
                   <input type="checkbox" name="isActive" defaultChecked={g.isActive} /> Активна
                 </label>
-                <button className="btn-primary px-4 py-2 text-sm">Сохранить</button>
+                <SubmitButton className="btn-primary px-4 py-2 text-sm" pendingText="Сохраняем…">
+                  Сохранить
+                </SubmitButton>
               </form>
               <ConfirmDeleteButton
                 action={deleteGame}
@@ -128,7 +131,12 @@ export default async function AdminGamesPage() {
                                 <label className="flex items-center gap-2 text-sm">
                                   <input type="checkbox" name="isActive" defaultChecked={p.isActive} /> Активен
                                 </label>
-                                <button className="btn-primary px-3 py-1.5 text-xs sm:col-span-2">Сохранить</button>
+                                <SubmitButton
+                                  className="btn-primary px-3 py-1.5 text-xs sm:col-span-2"
+                                  pendingText="Сохраняем…"
+                                >
+                                  Сохранить
+                                </SubmitButton>
                               </form>
                               <div className="mt-2">
                                 <ConfirmDeleteButton action={deletePackage} id={p.id} confirmText={`Удалить товар «${p.title}»?`} />
@@ -152,7 +160,9 @@ export default async function AdminGamesPage() {
                     ))}
                   </select>
                   <input name="image" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
-                  <button className="btn-ghost sm:col-span-2">+ Добавить товар</button>
+                  <SubmitButton className="btn-ghost sm:col-span-2" pendingText="Добавляем…">
+                    + Добавить товар
+                  </SubmitButton>
                 </form>
               </div>
             </div>
@@ -183,7 +193,9 @@ export default async function AdminGamesPage() {
           <label className="label">Картинка</label>
           <input name="image" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
         </div>
-        <button className="btn-primary">Добавить игру</button>
+        <SubmitButton className="btn-primary" pendingText="Добавляем…">
+          Добавить игру
+        </SubmitButton>
       </form>
     </div>
   );

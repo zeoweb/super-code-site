@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SubmitButton } from "@/components/SubmitButton";
 
 // Кнопка «Отклонить» → раскрывает поле для обязательного комментария.
 export function RejectButton({
@@ -29,7 +30,9 @@ export function RejectButton({
         placeholder="Причина отклонения"
         className="input py-2 text-sm"
       />
-      <button className="btn-primary px-3 py-2 text-sm">Подтвердить</button>
+      <SubmitButton className="btn-primary px-3 py-2 text-sm" pendingText="Отправляем…">
+        Подтвердить
+      </SubmitButton>
     </form>
   );
 }
