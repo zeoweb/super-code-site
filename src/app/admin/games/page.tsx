@@ -108,6 +108,7 @@ export default async function AdminGamesPage() {
                                 <span>
                                   {p.title} · {p.price.toString()} смн {p.region && `· ${p.region}`}
                                   {!p.isActive && <span className="ml-2 badge text-slate-600">выкл</span>}
+                                  {p.externalOfferId && <span className="ml-2 badge border-emerald-500/40 text-emerald-600">🤖 авто</span>}
                                 </span>
                               </summary>
                               <form action={updatePackage} className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -121,6 +122,12 @@ export default async function AdminGamesPage() {
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                   ))}
                                 </select>
+                                <input
+                                  name="externalOfferId"
+                                  defaultValue={p.externalOfferId ?? ""}
+                                  className="input"
+                                  placeholder="FazerCards offer_id (напр. 110_diamonds)"
+                                />
                                 <div className="flex items-center gap-2">
                                   {p.imageUrl && (
                                     // eslint-disable-next-line @next/next/no-img-element
@@ -159,6 +166,7 @@ export default async function AdminGamesPage() {
                       <option key={k.value} value={k.value}>{k.label}</option>
                     ))}
                   </select>
+                  <input name="externalOfferId" className="input" placeholder="FazerCards offer_id (опционально)" />
                   <input name="image" type="file" accept="image/png,image/jpeg,image/webp" className="input" />
                   <SubmitButton className="btn-ghost sm:col-span-2" pendingText="Добавляем…">
                     + Добавить товар

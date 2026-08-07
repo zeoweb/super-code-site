@@ -36,6 +36,9 @@ enum OrderStatus {
   pending // ждёт ручной выдачи валюты в игре
   completed // выдано
   rejected // отклонено (неверный ID и т.п.)
+  failed // авто-заказ через внешний API (FazerCards) не прошёл — баланс уже
+  // возвращён автоматически, заказ ждёт ручного разбора отдельно от
+  // обычной очереди pending
 }
 
 // Причина движения баланса — журнал, а не просто число на User.
@@ -45,6 +48,7 @@ enum BalanceTxReason {
   referral // реферальный бонус (% с покупки приглашённого)
   admin // ручная корректировка админом
   promo // бонус по промокоду
+  refund // автоматический возврат (напр. сбой авто-заказа у внешнего API)
 }
 
 model User {
@@ -124,6 +128,11 @@ model Package {
   price      Decimal     @db.Decimal(10, 2)
   isActive   Boolean     @default(true) @map("is_active")
   orderIndex Int         @default(0) @map("order_index")
+  // offer_id у внешнего поставщика (сейчас FazerCards, категория free_fire_cis)
+  // для автоматического заказа — пусто, если для этого товара нет пары
+  // (тогда заказ остаётся на ручной обработке, как раньше). Правится через
+  // админку, не хардкод.
+  externalOfferId String? @map("external_offer_id")
 
   game   Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
   orders Order[]
@@ -145,6 +154,14 @@ model Order {
   adminComment   String?     @map("admin_comment")
   createdAt      DateTime    @default(now()) @map("created_at")
   processedAt    DateTime?   @map("processed_at")
+  // Заполняется, если заказ был отправлен во внешний API (FazerCards) на
+  // автовыдачу — id заказа там (ord-XXXX), для сверки в кабинете поставщика.
+  externalOrderId String?    @map("external_order_id")
+  // Причина, по которой авто-заказ не был отправлен или завершился ошибкой
+  // (не СНГ регион, маржа ниже порога, не хватает баланса у поставщика,
+  // сбой/таймаут запроса и т.п.) — для видимости админу, не показывается
+  // пользователю как есть.
+  autoOrderError  String?    @map("auto_order_error")
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   game    Game    @relation(fields: [gameId], references: [id], onDelete: Restrict)
@@ -325,4 +342,19 @@ model Notification {
 
   @@index([userId])
   @@map("notifications")
+}
+
+// Единственная строка (id фиксирован = 1) с общесайтовыми настройками,
+// правится через админку. Пока только то, что нужно для авто-заказа через
+// FazerCards — курс для пересчёта себестоимости в USD и порог маржи.
+model AppSetting {
+  id                  Int      @id @default(1)
+  usdToTjsRate        Decimal  @default(9.22) @db.Decimal(6, 4) @map("usd_to_tjs_rate")
+  // Максимальная доля себестоимости (в валюте сайта) от цены продажи, при
+  // которой ещё можно авто-заказывать — выше порога цены разъехались,
+  // заказ уходит в ручную очередь.
+  fazercardsMarginMax Decimal  @default(0.85) @db.Decimal(4, 2) @map("fazercards_margin_max")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
 }

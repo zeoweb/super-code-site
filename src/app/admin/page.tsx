@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/db";
+import { getFazerCardsBalance } from "@/lib/fazercards";
 
 // Статистика/аналитика по ТЗ.
 export default async function AdminStatsPage() {
   const now = new Date();
   const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-  const [totalUsers, topupsThisMonth, revenueAgg, ordersThisMonth, gamesCount, pendingTopups] =
+  const [totalUsers, topupsThisMonth, revenueAgg, ordersThisMonth, gamesCount, pendingTopups, fazerBalance] =
     await Promise.all([
       prisma.user.count(),
       prisma.topUp.count({
@@ -18,6 +19,7 @@ export default async function AdminStatsPage() {
       prisma.order.count({ where: { createdAt: { gte: monthAgo } } }),
       prisma.game.count({ where: { isActive: true } }),
       prisma.topUp.count({ where: { status: "pending" } }),
+      getFazerCardsBalance(),
     ]);
 
   const revenue = revenueAgg._sum.amount ? Number(revenueAgg._sum.amount) : 0;
@@ -34,9 +36,13 @@ export default async function AdminStatsPage() {
       </div>
 
       <h2 className="mt-8 text-lg font-bold">Сейчас</h2>
-      <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard value={String(gamesCount)} label="Активных игр в каталоге" />
         <StatCard value={String(pendingTopups)} label="Заявок на пополнение ждут" />
+        <StatCard
+          value={fazerBalance.ok ? `$${fazerBalance.balanceUsd.toFixed(2)}` : "—"}
+          label="Баланс FazerCards"
+        />
       </div>
     </div>
   );

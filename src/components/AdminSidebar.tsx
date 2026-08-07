@@ -29,6 +29,7 @@ const NAV: NavEntry[] = [
   { type: "leaf", href: "/admin/reviews", label: "Отзывы", icon: StarIcon },
   { type: "leaf", href: "/admin/chats", label: "Чаты", icon: ChatIcon },
   { type: "leaf", href: "/admin/notify", label: "Рассылка", icon: BellIcon },
+  { type: "leaf", href: "/admin/settings", label: "Настройки", icon: SettingsIcon },
 ];
 
 export function AdminSidebar({ name, avatarUrl }: { name: string; avatarUrl?: string | null }) {
@@ -204,6 +205,19 @@ function BellIcon(props: IconProps) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" {...props}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M6 8a6 6 0 1 1 12 0c0 3.5 1 5.5 2 7H4c1-1.5 2-3.5 2-7Z" />
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 19a2.5 2.5 0 0 0 5 0" />
+    </svg>
+  );
+}
+
+function SettingsIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" {...props}>
+      <circle cx="12" cy="12" r="3" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V19a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H4a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H10a1.65 1.65 0 0 0 1-1.51V4a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V10a1.65 1.65 0 0 0 1.51 1H20a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
+      />
     </svg>
   );
 }

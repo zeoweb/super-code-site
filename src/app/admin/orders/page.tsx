@@ -9,14 +9,16 @@ const TABS: { key: OrderStatus; label: string }[] = [
   { key: "pending", label: "В обработке" },
   { key: "completed", label: "Выполнены" },
   { key: "rejected", label: "Отклонены" },
+  { key: "failed", label: "Сбой авто-заказа" },
 ];
+const TAB_KEYS = TABS.map((t) => t.key);
 
 export default async function AdminOrdersPage({
   searchParams,
 }: {
   searchParams: { tab?: string };
 }) {
-  const tab = (["pending", "completed", "rejected"].includes(searchParams.tab ?? "")
+  const tab = (TAB_KEYS.includes(searchParams.tab as OrderStatus)
     ? searchParams.tab
     : "pending") as OrderStatus;
 
@@ -66,6 +68,17 @@ export default async function AdminOrdersPage({
                   </div>
                   <div className="text-sm text-slate-600">ID игрока: {o.gameIdentifier}</div>
                   <div className="text-xs text-slate-600">{o.createdAt.toLocaleString("ru-RU")}</div>
+                  {o.externalOrderId && (
+                    <div className="mt-1 text-xs text-emerald-600">
+                      🤖 Авто-заказ FazerCards: {o.externalOrderId}
+                    </div>
+                  )}
+                  {o.autoOrderError && (
+                    <div className="mt-1 text-xs text-amber-600">
+                      {o.status === "failed" ? "Сбой авто-заказа: " : "Авто-заказ не отправлен: "}
+                      {o.autoOrderError}
+                    </div>
+                  )}
                   {o.adminComment && (
                     <div className="mt-1 text-xs text-red-600">Причина: {o.adminComment}</div>
                   )}

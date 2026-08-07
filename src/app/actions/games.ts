@@ -112,6 +112,7 @@ export async function createPackage(formData: FormData) {
     region: string | null;
     kind: PackageKind;
     orderIndex: number;
+    externalOfferId: string | null;
     imageUrl?: string;
   } = {
     gameId,
@@ -121,6 +122,7 @@ export async function createPackage(formData: FormData) {
     region: String(formData.get("region") ?? "").trim() || null,
     kind: (String(formData.get("kind") ?? "currency") as PackageKind) || "currency",
     orderIndex: count,
+    externalOfferId: String(formData.get("externalOfferId") ?? "").trim() || null,
   };
 
   const image = formData.get("image");
@@ -151,6 +153,7 @@ export async function updatePackage(formData: FormData) {
     region: string | null;
     kind: PackageKind;
     isActive: boolean;
+    externalOfferId: string | null;
     imageUrl?: string;
   } = {
     title,
@@ -159,6 +162,7 @@ export async function updatePackage(formData: FormData) {
     region: String(formData.get("region") ?? "").trim() || null,
     kind: (String(formData.get("kind") ?? "currency") as PackageKind) || "currency",
     isActive: formData.get("isActive") === "on",
+    externalOfferId: String(formData.get("externalOfferId") ?? "").trim() || null,
   };
 
   const image = formData.get("image");

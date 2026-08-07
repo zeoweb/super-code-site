@@ -5,9 +5,12 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { REFERRAL_PERCENT } from "@/lib/referral";
+import { attemptFreeFireAutoOrder } from "@/lib/fazerAutoOrder";
 
 // Пользователь покупает пакет за баланс — списание мгновенное, выдачу
-// валюты в игре админ подтверждает вручную (см. actions/admin-orders.ts).
+// валюты в игре админ подтверждает вручную (см. actions/admin-orders.ts),
+// кроме Free Fire (CIS) товаров с привязкой к FazerCards — для них ниже
+// делается попытка авто-заказа сразу после оформления.
 export async function createOrder(formData: FormData): Promise<void> {
   const gameSlug = String(formData.get("gameSlug") ?? "");
   const packageId = String(formData.get("packageId") ?? "");
@@ -58,7 +61,7 @@ export async function createOrder(formData: FormData): Promise<void> {
     redirect(`${back}?error=${encodeURIComponent("Недостаточно средств на балансе")}`);
   }
 
-  await prisma.$transaction(async (tx) => {
+  const order = await prisma.$transaction(async (tx) => {
     const order = await tx.order.create({
       data: {
         userId: user.id,
@@ -97,10 +100,28 @@ export async function createOrder(formData: FormData): Promise<void> {
         data: { userId: user.referredById, amount: bonus, reason: "referral", refId: order.id },
       });
     }
+
+    return order;
   }, { timeout: 20000 });
+
+  // Free Fire (CIS) с привязкой к FazerCards — попытка авто-заказа. Ничего
+  // не меняет в уже завершённой покупке выше: в худшем случае просто
+  // остаётся в обычной ручной очереди (см. lib/fazerAutoOrder.ts).
+  if (pkg!.externalOfferId) {
+    await attemptFreeFireAutoOrder({
+      id: order.id,
+      userId: user.id,
+      gameSlug,
+      gameTitle: pkg!.game.title,
+      externalOfferId: pkg!.externalOfferId,
+      gameIdentifier,
+      priceTjs: Number(price),
+    });
+  }
 
   revalidatePath("/history");
   revalidatePath("/profile");
   revalidatePath("/");
+  revalidatePath("/admin/orders");
   redirect("/history");
 }

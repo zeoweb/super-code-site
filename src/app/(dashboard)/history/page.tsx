@@ -9,11 +9,13 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
   pending: "В обработке",
   completed: "Выполнен",
   rejected: "Отклонён",
+  failed: "Средства возвращены",
 };
 const ORDER_STATUS_CLASS: Record<string, string> = {
   completed: "border-emerald-500/40 text-emerald-600",
   rejected: "border-red-500/40 text-red-600",
   pending: "border-yellow-500/40 text-amber-600",
+  failed: "border-yellow-500/40 text-amber-600",
 };
 
 const ORDER_STATUS_FILTERS = [
@@ -21,6 +23,7 @@ const ORDER_STATUS_FILTERS = [
   { key: "completed", label: "Выполнен" },
   { key: "pending", label: "В ожидании" },
   { key: "rejected", label: "Отменён" },
+  { key: "failed", label: "Возвращён" },
 ];
 
 const TXN_REASON_LABEL: Record<BalanceTxReason, string> = {
@@ -29,6 +32,7 @@ const TXN_REASON_LABEL: Record<BalanceTxReason, string> = {
   referral: "Реферальный бонус",
   admin: "Корректировка",
   promo: "Бонус по промокоду",
+  refund: "Возврат средств",
 };
 
 const DIRECTION_FILTERS = [
@@ -46,7 +50,7 @@ export default async function HistoryPage({
   if (!user) redirect("/login?returnTo=/history");
 
   const tab = searchParams.tab === "finance" ? "finance" : "orders";
-  const status = ["completed", "pending", "rejected"].includes(searchParams.status ?? "")
+  const status = ["completed", "pending", "rejected", "failed"].includes(searchParams.status ?? "")
     ? searchParams.status!
     : "all";
   const direction = ["in", "out"].includes(searchParams.direction ?? "") ? searchParams.direction! : "all";
