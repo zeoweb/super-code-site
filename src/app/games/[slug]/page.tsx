@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Package } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { supportsIdValidation } from "@/lib/fazercards";
 import { PackagePicker } from "@/components/PackagePicker";
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -71,6 +72,7 @@ export default async function GamePage({
           }))}
           error={searchParams.error}
           balance={user ? user.balance.toString() : null}
+          supportsIdCheck={supportsIdValidation(game.slug)}
         />
       )}
     </main>

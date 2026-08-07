@@ -1,10 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Gem, Ticket, BadgeCheck, Package } from "lucide-react";
+import { Gem, Ticket, BadgeCheck, Package, Loader2 } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
+import { checkGameId } from "@/app/actions/gameId";
 import { InsufficientFundsModal } from "@/components/InsufficientFundsModal";
 import { ConfirmOrderModal } from "@/components/ConfirmOrderModal";
+
+type IdCheckState =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "valid"; playerName: string | null }
+  | { status: "invalid" }
+  | { status: "unavailable" };
 
 type PackageItem = {
   id: string;
@@ -53,6 +61,7 @@ export function PackagePicker({
   packages,
   error,
   balance,
+  supportsIdCheck,
 }: {
   gameSlug: string;
   gameTitle: string;
@@ -60,6 +69,7 @@ export function PackagePicker({
   packages: PackageItem[];
   error?: string;
   balance: string | null;
+  supportsIdCheck: boolean;
 }) {
   // Регион показывается только если у игры реально больше одного региона
   // среди товаров — если он один (или не задан вовсе), секция скрывается
@@ -73,7 +83,7 @@ export function PackagePicker({
   const [kind, setKind] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [gameIdentifier, setGameIdentifier] = useState("");
-  const [idChecked, setIdChecked] = useState(false);
+  const [idCheck, setIdCheck] = useState<IdCheckState>({ status: "idle" });
   const [showInsufficient, setShowInsufficient] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -101,6 +111,30 @@ export function PackagePicker({
     setSelected(null);
   }
 
+  async function handleCheckId() {
+    const trimmed = gameIdentifier.trim();
+    if (!trimmed || idCheck.status === "loading") return;
+
+    if (!supportsIdCheck) {
+      setIdCheck({ status: "valid", playerName: null }); // старое поведение — "✓ ID сохранён"
+      return;
+    }
+
+    setIdCheck({ status: "loading" });
+    try {
+      const result = await checkGameId(gameSlug, trimmed);
+      if (result.status === "valid") {
+        setIdCheck({ status: "valid", playerName: result.playerName });
+      } else if (result.status === "invalid") {
+        setIdCheck({ status: "invalid" });
+      } else {
+        setIdCheck({ status: "unavailable" });
+      }
+    } catch {
+      setIdCheck({ status: "unavailable" });
+    }
+  }
+
   function handleBuyClick() {
     if (!selectedPackage) return;
     if (balance !== null && Number(balance) < Number(selectedPackage.price)) {
@@ -120,21 +154,38 @@ export function PackagePicker({
             value={gameIdentifier}
             onChange={(e) => {
               setGameIdentifier(e.target.value);
-              setIdChecked(false);
+              setIdCheck({ status: "idle" });
             }}
             className="input flex-1"
             placeholder={ID_PLACEHOLDER[gameSlug] ?? "Введите ID или номер телефона"}
           />
           <button
             type="button"
-            onClick={() => gameIdentifier.trim() && setIdChecked(true)}
-            disabled={!gameIdentifier.trim()}
+            onClick={handleCheckId}
+            disabled={!gameIdentifier.trim() || idCheck.status === "loading"}
             className="btn-ghost shrink-0 px-4 disabled:opacity-40"
           >
-            Проверить
+            {idCheck.status === "loading" ? (
+              <span className="flex items-center gap-1.5">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Проверяем…
+              </span>
+            ) : (
+              "Проверить"
+            )}
           </button>
         </div>
-        {idChecked && <p className="mt-1.5 text-xs text-emerald-600">✓ ID сохранён</p>}
+        {idCheck.status === "valid" && (
+          <p className="mt-1.5 text-xs text-emerald-600">
+            ✓ {supportsIdCheck ? idCheck.playerName ?? "ID подтверждён" : "ID сохранён"}
+          </p>
+        )}
+        {idCheck.status === "invalid" && (
+          <p className="mt-1.5 text-xs text-red-600">ID не найден, проверьте номер</p>
+        )}
+        {idCheck.status === "unavailable" && (
+          <p className="mt-1.5 text-xs text-slate-500">Проверка временно недоступна — можно продолжить без неё</p>
+        )}
       </div>
 
       {regions.length > 1 && (
