@@ -7,5 +7,5 @@ export const TOPUP_MAX_AMOUNT = 2000;
 // защита от спама заявками, пока предыдущие не разобраны админом. Как
 // только одна из них одобряется/отклоняется, лимит освобождается сам
 // (проверка каждый раз считает status: "pending" заново).
-export const TOPUP_MAX_PENDING = 3;
+export const TOPUP_MAX_PENDING = 2;
 export const TOPUP_PENDING_LIMIT_MESSAGE = `У вас уже ${TOPUP_MAX_PENDING} заявки на рассмотрении, дождитесь их обработки.`;
