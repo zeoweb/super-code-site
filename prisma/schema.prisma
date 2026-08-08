@@ -335,6 +335,10 @@ model Notification {
   id        String   @id @default(uuid())
   userId    String   @map("user_id")
   message   String
+  // Необязательная кнопка-действие под текстом (напр. "Перейти в Telegram")
+  // — оба поля заданы вместе или оба пусты.
+  actionLabel String? @map("action_label")
+  actionUrl   String? @map("action_url")
   read      Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
 

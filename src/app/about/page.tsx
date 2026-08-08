@@ -110,6 +110,8 @@ export default async function AboutPage() {
             message: n.message,
             read: n.read,
             createdAt: n.createdAt.toISOString(),
+            actionLabel: n.actionLabel,
+            actionUrl: n.actionUrl,
           }))}
           initialMessages={messages
             .map((m) => ({

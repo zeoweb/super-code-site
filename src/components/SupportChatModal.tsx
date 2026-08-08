@@ -5,7 +5,14 @@ import { markNotificationsRead } from "@/app/actions/notifications";
 import { markCuratorMessagesRead, sendStudentMessage } from "@/app/actions/chat";
 import { ChatMessageBody } from "@/components/ChatMessageBody";
 
-type NotifItem = { id: string; message: string; read: boolean; createdAt: string };
+type NotifItem = {
+  id: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  actionLabel?: string | null;
+  actionUrl?: string | null;
+};
 type ChatItem = { id: string; text: string; fromAdmin: boolean; read: boolean; createdAt: string };
 type Tab = "all" | "system" | "curator";
 
@@ -168,6 +175,16 @@ function openModal() {
                   item.kind === "notification" ? (
                     <div key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm">
                       <p>{item.data.message}</p>
+                      {item.data.actionUrl && item.data.actionLabel && (
+                        <a
+                          href={item.data.actionUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="btn-primary mt-2 inline-flex px-3 py-1.5 text-xs"
+                        >
+                          {item.data.actionLabel}
+                        </a>
+                      )}
                       <p className="mt-1 text-xs text-slate-600">{formatTime(item.createdAt)}</p>
                     </div>
                   ) : (
