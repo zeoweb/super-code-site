@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { getPendingPopupNotification } from "@/lib/notifications";
 import { CatalogClient } from "@/components/CatalogClient";
 import { SupportChatModal } from "@/components/SupportChatModal";
+import { PopupNotificationModal } from "@/components/PopupNotificationModal";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -12,7 +14,7 @@ export default async function CatalogPage() {
   const user = await getCurrentUser();
   const dict = getDictionary(getLocale());
 
-  const [games, notifications, messages] = await Promise.all([
+  const [games, notifications, messages, popupNotification] = await Promise.all([
     prisma.game.findMany({ where: { isActive: true }, orderBy: { orderIndex: "asc" } }),
     user
       ? prisma.notification.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 20 })
@@ -20,6 +22,7 @@ export default async function CatalogPage() {
     user
       ? prisma.chatMessage.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 30 })
       : Promise.resolve([]),
+    user ? getPendingPopupNotification(user.id) : Promise.resolve(null),
   ]);
 
   // overflow-x-clip здесь раньше стоял прямо на <main> — из-за него
@@ -65,6 +68,15 @@ export default async function CatalogPage() {
               createdAt: m.createdAt.toISOString(),
             }))
             .reverse()}
+        />
+      )}
+
+      {popupNotification && (
+        <PopupNotificationModal
+          id={popupNotification.id}
+          message={popupNotification.message}
+          actionLabel={popupNotification.actionLabel}
+          actionUrl={popupNotification.actionUrl}
         />
       )}
     </main>

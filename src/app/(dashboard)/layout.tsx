@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { getPendingPopupNotification } from "@/lib/notifications";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupportChatModal } from "@/components/SupportChatModal";
+import { PopupNotificationModal } from "@/components/PopupNotificationModal";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -18,7 +20,7 @@ export default async function DashboardGroupLayout({
   if (!user) redirect("/login");
   const dict = getDictionary(getLocale());
 
-  const [notifications, messages] = await Promise.all([
+  const [notifications, messages, popupNotification] = await Promise.all([
     prisma.notification.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -29,6 +31,7 @@ export default async function DashboardGroupLayout({
       orderBy: { createdAt: "desc" },
       take: 30,
     }),
+    getPendingPopupNotification(user.id),
   ]);
 
   return (
@@ -63,6 +66,14 @@ export default async function DashboardGroupLayout({
           }))
           .reverse()}
       />
+      {popupNotification && (
+        <PopupNotificationModal
+          id={popupNotification.id}
+          message={popupNotification.message}
+          actionLabel={popupNotification.actionLabel}
+          actionUrl={popupNotification.actionUrl}
+        />
+      )}
     </div>
   );
 }

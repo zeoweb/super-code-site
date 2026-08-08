@@ -339,6 +339,11 @@ model Notification {
   // — оба поля заданы вместе или оба пусты.
   actionLabel String? @map("action_label")
   actionUrl   String? @map("action_url")
+  // Важные уведомления можно показать не только в колокольчике, но и
+  // всплывающим окном при заходе на сайт — до тех пор, пока пользователь
+  // его не закроет (popupDismissedAt), после этого больше не всплывает.
+  showAsPopup      Boolean   @default(false) @map("show_as_popup")
+  popupDismissedAt DateTime? @map("popup_dismissed_at")
   read      Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
 

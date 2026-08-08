@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { getPendingPopupNotification } from "@/lib/notifications";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupportChatModal } from "@/components/SupportChatModal";
+import { PopupNotificationModal } from "@/components/PopupNotificationModal";
 import { ReviewForm } from "@/components/ReviewForm";
 import { ReviewsList } from "@/components/ReviewsList";
 
@@ -24,12 +26,13 @@ export default async function AboutPage() {
   ]);
   const dict = getDictionary(getLocale());
 
-  const [notifications, messages] = user
+  const [notifications, messages, popupNotification] = user
     ? await Promise.all([
         prisma.notification.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 20 }),
         prisma.chatMessage.findMany({ where: { userId: user.id }, orderBy: { createdAt: "desc" }, take: 30 }),
+        getPendingPopupNotification(user.id),
       ])
-    : [[], []];
+    : [[], [], null];
 
   return (
     <main className="relative mx-auto min-h-screen max-w-2xl p-6 pb-24 sm:pb-16">
@@ -122,6 +125,15 @@ export default async function AboutPage() {
               createdAt: m.createdAt.toISOString(),
             }))
             .reverse()}
+        />
+      )}
+
+      {popupNotification && (
+        <PopupNotificationModal
+          id={popupNotification.id}
+          message={popupNotification.message}
+          actionLabel={popupNotification.actionLabel}
+          actionUrl={popupNotification.actionUrl}
         />
       )}
     </main>

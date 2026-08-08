@@ -13,3 +13,16 @@ export async function markNotificationsRead() {
     data: { read: true },
   });
 }
+
+// Закрытие всплывающего уведомления — больше не показывается этому
+// пользователю. updateMany с userId в where — чтобы нельзя было закрыть
+// чужое уведомление, подставив произвольный id.
+export async function dismissPopupNotification(id: string) {
+  const user = await getCurrentUser();
+  if (!user) return;
+
+  await prisma.notification.updateMany({
+    where: { id, userId: user.id },
+    data: { popupDismissedAt: new Date() },
+  });
+}
